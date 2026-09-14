@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CYBER CASINO 30s - 도파민 미니게임</title>
+  <title>LUCKY LAB 30s - 30초 확률 아케이드</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <!-- Google Fonts: Pretendard & Orbitron -->
+  <!-- Google Fonts: Pretendard & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Pretendard:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
@@ -21,36 +21,32 @@
         extend: {
           fontFamily: {
             sans: ['Pretendard', 'sans-serif'],
-            cyber: ['Orbitron', 'sans-serif'],
+            display: ['Inter', 'sans-serif'],
           },
           colors: {
-            cyber: {
-              dark: '#0a0b10',
-              card: '#121420',
-              border: '#232840',
-              neonGreen: '#00ff88',
-              neonPink: '#ff0055',
-              neonCyan: '#00e5ff',
-              neonYellow: '#ffdd00',
-              gold: '#ffd700',
+            slate: {
+              850: '#151c2c',
+              900: '#0f172a',
+              950: '#090d16',
+            },
+            brand: {
+              indigo: '#6366f1',
+              violet: '#8b5cf6',
+              sky: '#0284c7',
+              emerald: '#10b981',
+              amber: '#f59e0b',
+              rose: '#f43f5e',
             }
           },
           animation: {
-            'glow-pulse': 'glowPulse 2s infinite',
             'shake': 'shake 0.5s ease-in-out infinite',
-            'spin-slow': 'spin 8s linear infinite',
           },
           keyframes: {
-            glowPulse: {
-              '0%, 100%': { boxShadow: '0 0 15px rgba(0, 229, 255, 0.4)' },
-              '50%': { boxShadow: '0 0 30px rgba(0, 229, 255, 0.8)' },
-            },
             shake: {
               '0%, 100%': { transform: 'translate(0, 0) rotate(0deg)' },
-              '20%': { transform: 'translate(-3px, 2px) rotate(-3deg)' },
-              '40%': { transform: 'translate(3px, -2px) rotate(3deg)' },
-              '60%': { transform: 'translate(-2px, -1px) rotate(-1deg)' },
-              '80%': { transform: 'translate(2px, 1px) rotate(1deg)' },
+              '25%': { transform: 'translate(-2px, 1px) rotate(-1deg)' },
+              '50%': { transform: 'translate(2px, -1px) rotate(1deg)' },
+              '75%': { transform: 'translate(-1px, -1px) rotate(0deg)' },
             }
           }
         }
@@ -59,181 +55,179 @@
   </script>
 
   <style>
-    /* 3D 카드 플립 효과 */
     .perspective-1000 { perspective: 1000px; }
     .transform-style-3d { transform-style: preserve-3d; }
     .backface-hidden { backface-visibility: hidden; }
     .rotate-y-180 { transform: rotateY(180deg); }
 
-    /* 커스텀 스크롤바 */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #0a0b10; }
-    ::-webkit-scrollbar-thumb { background: #232840; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #00e5ff; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
   </style>
 </head>
-<body class="bg-cyber-dark text-gray-100 font-sans min-h-screen flex flex-col justify-between selection:bg-cyber-neonCyan selection:text-black overflow-x-hidden">
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-brand-indigo selection:text-white overflow-x-hidden">
 
-  <!-- ==================== TOP NAVIGATION BAR ==================== -->
-  <header class="border-b border-cyber-border bg-cyber-card/80 backdrop-blur-md sticky top-0 z-40 px-4 py-3 shadow-lg">
+  <!-- ==================== HEADER (모던 테크 미니멀) ==================== -->
+  <header class="border-b border-slate-800/80 bg-slate-900/90 backdrop-blur-md sticky top-0 z-40 px-4 py-3 shadow-sm">
     <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4">
       
-      <!-- 로고 및 슬로건 -->
+      <!-- 로고 & 슬로건 -->
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyber-neonCyan to-cyber-neonPink flex items-center justify-center shadow-lg shadow-cyber-neonPink/20 animate-glow-pulse">
-          <i data-lucide="dices" class="w-6 h-6 text-black"></i>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-indigo to-brand-violet flex items-center justify-center shadow-md shadow-brand-indigo/20 text-white">
+          <i data-lucide="sparkles" class="w-5 h-5"></i>
         </div>
         <div>
           <div class="flex items-center space-x-2">
-            <h1 class="font-cyber font-black text-xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyber-neonCyan via-cyber-neonYellow to-cyber-neonPink">
-              CYBER BET 30s
+            <h1 class="font-display font-extrabold text-lg tracking-tight text-white">
+              LUCKY LAB <span class="text-brand-indigo">30s</span>
             </h1>
-            <span class="px-2 py-0.5 text-xs font-bold rounded bg-cyber-neonPink/20 text-cyber-neonPink border border-cyber-neonPink/40">LIVE</span>
+            <span class="px-2 py-0.5 text-[11px] font-semibold rounded-md bg-brand-indigo/15 text-brand-indigo border border-brand-indigo/30">Arcade</span>
           </div>
-          <p class="text-xs text-gray-400">인생은 한 방! 30초 안에 당신의 운을 시험하라</p>
+          <p class="text-xs text-slate-400">30초 확률 챌린지 • 당신의 직관을 시험하세요</p>
         </div>
       </div>
 
-      <!-- 헤더 우측: 칩 잔액, 난이도 모드, 일시정지 버튼 -->
-      <div class="flex items-center space-x-4">
+      <!-- 우측 상태: 모드 스위치, 칩, 일시정지 -->
+      <div class="flex items-center space-x-3">
         
         <!-- 단일 난이도 파라미터 (House Edge 토글) -->
-        <div class="flex items-center bg-black/40 rounded-xl p-1 border border-cyber-border">
-          <button id="modeSafeBtn" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-cyber-neonCyan text-black shadow">
-            일반 모드 (수수료 5%)
+        <div class="flex items-center bg-slate-850 rounded-xl p-1 border border-slate-800">
+          <button id="modeSafeBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-brand-indigo text-white shadow-sm">
+            스탠다드 (수수료 5%)
           </button>
-          <button id="modeHighrollerBtn" class="px-3 py-1.5 rounded-lg text-xs font-bold text-gray-400 hover:text-cyber-neonYellow transition-all">
-            하이롤러 (잭팟 x3)
+          <button id="modeHighrollerBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all">
+            챌린지 (수수료 15% · 잭팟 x3)
           </button>
         </div>
 
-        <!-- 보유 칩 잔액 -->
-        <div class="flex items-center space-x-2 bg-gradient-to-r from-amber-500/10 to-yellow-500/20 border border-yellow-500/30 rounded-xl px-4 py-2">
-          <i data-lucide="coins" class="w-5 h-5 text-cyber-gold animate-bounce"></i>
+        <!-- 포인트/코인 밸런스 -->
+        <div class="flex items-center space-x-2 bg-slate-850 border border-slate-800 rounded-xl px-3.5 py-2">
+          <i data-lucide="coins" class="w-4 h-4 text-brand-amber"></i>
           <div>
-            <div class="text-[10px] text-gray-400 uppercase font-cyber font-bold tracking-wider">CHIPS</div>
-            <div id="chipBalance" class="font-cyber font-extrabold text-xl text-cyber-gold">10,000</div>
+            <div class="text-[10px] text-slate-400 font-medium tracking-wider uppercase">POINTS</div>
+            <div id="chipBalance" class="font-display font-bold text-base text-slate-100">10,000</div>
           </div>
         </div>
 
-        <!-- 수동 일시정지/재개 (T02-C15) -->
-        <button id="pauseResumeBtn" class="p-2.5 rounded-xl border border-cyber-border bg-cyber-card hover:bg-cyber-border transition-colors text-gray-300 hover:text-white" title="일시정지 / 재개">
-          <i id="pauseIcon" data-lucide="pause" class="w-5 h-5"></i>
+        <!-- 수동 일시정지 버튼 (T02-C15) -->
+        <button id="pauseResumeBtn" class="p-2.5 rounded-xl border border-slate-800 bg-slate-850 hover:bg-slate-800 transition-colors text-slate-300 hover:text-white" title="일시정지 / 재개">
+          <i id="pauseIcon" data-lucide="pause" class="w-4 h-4"></i>
         </button>
       </div>
 
     </div>
   </header>
 
-  <!-- ==================== MAIN CONTENT ==================== -->
-  <main class="max-w-6xl w-full mx-auto px-4 py-6 flex-1 flex flex-col gap-6">
+  <!-- ==================== MAIN BODY ==================== -->
+  <main class="max-w-6xl w-full mx-auto px-4 py-6 flex-1 flex flex-col gap-5">
 
-    <!-- 1. 30초 루프 상태 및 타임 바 (T02-C07) -->
-    <div class="bg-cyber-card border border-cyber-border rounded-2xl p-4 shadow-xl">
+    <!-- 1. 30초 상태 바 및 진행 게이지 (T02-C07) -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm">
       <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-        <div class="flex items-center space-x-2">
-          <span id="phaseBadge" class="px-3 py-1 text-xs font-extrabold rounded-lg uppercase tracking-wider bg-cyber-neonGreen/20 text-cyber-neonGreen border border-cyber-neonGreen/40 flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-cyber-neonGreen animate-ping"></span>
+        <div class="flex items-center space-x-2.5">
+          <span id="phaseBadge" class="px-2.5 py-1 text-xs font-bold rounded-lg uppercase tracking-wider bg-brand-emerald/15 text-brand-emerald border border-brand-emerald/30 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-brand-emerald animate-ping"></span>
             베팅 페이즈 (10초)
           </span>
-          <span id="roundCounter" class="text-xs text-gray-400 font-cyber">ROUND #1</span>
+          <span id="roundCounter" class="text-xs text-slate-400 font-display font-semibold">ROUND #1</span>
         </div>
-        <div class="flex items-center space-x-3 font-cyber">
-          <span id="phaseGuide" class="text-xs text-gray-300">원하는 타겟에 칩을 베팅하세요!</span>
-          <span id="timerText" class="text-2xl font-black text-cyber-neonCyan">10.0s</span>
+        <div class="flex items-center space-x-3 font-display">
+          <span id="phaseGuide" class="text-xs text-slate-300 font-sans">원하는 타겟에 포인트를 설정하세요</span>
+          <span id="timerText" class="text-xl font-bold text-slate-100">10.0s</span>
         </div>
       </div>
 
       <!-- 프로그레스 바 -->
-      <div class="w-full bg-black/60 rounded-full h-3.5 overflow-hidden p-0.5 border border-cyber-border/80">
-        <div id="timerProgress" class="h-full rounded-full bg-gradient-to-r from-cyber-neonCyan via-cyber-neonYellow to-cyber-neonPink transition-all duration-100 ease-linear w-full"></div>
+      <div class="w-full bg-slate-950 rounded-full h-2.5 overflow-hidden p-0.5 border border-slate-800">
+        <div id="timerProgress" class="h-full rounded-full bg-brand-indigo transition-all duration-100 ease-linear w-full"></div>
       </div>
     </div>
 
-    <!-- 2. Bento Grid: 게임 스테이지 & 베팅 컨트롤러 -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <!-- 2. BENTO GRID: 스테이지 & 컨트롤러 -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
 
-      <!-- LEFT: 미니게임 선택 탭 & 연출 스테이지 (7 cols) -->
-      <section class="lg:col-span-7 bg-cyber-card border border-cyber-border rounded-2xl p-5 flex flex-col justify-between shadow-2xl relative overflow-hidden">
+      <!-- LEFT: 미니게임 3종 스테이지 (7 cols) -->
+      <section class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between shadow-sm relative overflow-hidden">
         
-        <!-- 게임 탭 버튼 (홀짝 / 하이로우 / 사이버 경마) -->
-        <div class="flex items-center justify-between border-b border-cyber-border pb-3 mb-4">
+        <!-- 상단 탭 버튼 -->
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
           <div class="flex space-x-2">
-            <button id="tabOddEven" class="game-tab-btn active px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition-all bg-cyber-neonCyan text-black shadow-lg shadow-cyber-neonCyan/20">
-              <i data-lucide="dices" class="w-4 h-4"></i> 주사위 홀짝
+            <button id="tabOddEven" class="game-tab-btn active px-3.5 py-2 rounded-xl font-semibold text-xs flex items-center gap-1.5 transition-all bg-brand-indigo text-white shadow-sm">
+              <i data-lucide="dice-5" class="w-4 h-4"></i> 다이스 홀짝
             </button>
-            <button id="tabHighLow" class="game-tab-btn px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition-all text-gray-400 hover:text-white bg-black/30">
+            <button id="tabHighLow" class="game-tab-btn px-3.5 py-2 rounded-xl font-semibold text-xs flex items-center gap-1.5 transition-all text-slate-400 hover:text-white bg-slate-850">
               <i data-lucide="layers" class="w-4 h-4"></i> 하이로우 카드
             </button>
-            <button id="tabHorseRace" class="game-tab-btn px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition-all text-gray-400 hover:text-white bg-black/30">
-              <i data-lucide="trophy" class="w-4 h-4"></i> 사이버 경마
+            <button id="tabHorseRace" class="game-tab-btn px-3.5 py-2 rounded-xl font-semibold text-xs flex items-center gap-1.5 transition-all text-slate-400 hover:text-white bg-slate-850">
+              <i data-lucide="flag" class="w-4 h-4"></i> 스피드 레이스
             </button>
           </div>
-          <div class="text-xs text-gray-400 hidden sm:block" id="currentGameDesc">주사위 2개의 합이 홀수인가 짝수인가?</div>
+          <div class="text-xs text-slate-400 hidden sm:block" id="currentGameDesc">두 주사위의 합이 홀수일까 짝수일까?</div>
         </div>
 
-        <!-- 게임별 비주얼 연출 스테이지 -->
-        <div class="flex-1 min-h-[300px] flex items-center justify-center relative bg-black/40 rounded-xl border border-cyber-border/60 overflow-hidden p-4">
+        <!-- 게임 스테이지 뷰포트 -->
+        <div class="flex-1 min-h-[300px] flex items-center justify-center relative bg-slate-950/80 rounded-xl border border-slate-800/80 overflow-hidden p-4">
 
           <!-- 1) 주사위 홀짝 스테이지 -->
           <div id="stageOddEven" class="game-stage w-full h-full flex flex-col items-center justify-center gap-6">
             <div id="cupContainer" class="relative transition-transform duration-500">
-              <!-- 주사위 컵 (쉐이킹 연출) -->
-              <div id="diceCup" class="w-32 h-36 bg-gradient-to-b from-gray-700 via-gray-800 to-black rounded-t-full border-4 border-cyber-neonCyan flex items-center justify-center shadow-2xl shadow-cyber-neonCyan/30 relative z-20 cursor-pointer">
-                <i data-lucide="shield" class="w-12 h-12 text-cyber-neonCyan/40"></i>
-                <span class="absolute bottom-2 text-[10px] font-cyber tracking-widest text-cyber-neonCyan font-bold">CYBER CUP</span>
+              <!-- 세련된 다크 큐브/컵 -->
+              <div id="diceCup" class="w-28 h-32 bg-slate-800/90 rounded-2xl border border-slate-700 flex flex-col items-center justify-center shadow-lg relative z-20 cursor-pointer">
+                <i data-lucide="box" class="w-8 h-8 text-brand-indigo/70 mb-1"></i>
+                <span class="text-[10px] font-semibold text-slate-400">SHAKER</span>
               </div>
-              <!-- 숨겨진 주사위들 -->
-              <div id="diceResultBox" class="absolute inset-0 flex items-center justify-center gap-4 z-10 opacity-0 transition-opacity duration-300">
-                <div id="dice1" class="w-16 h-16 bg-white rounded-2xl shadow-2xl flex items-center justify-center text-4xl font-black text-black font-cyber border-2 border-gray-300">
+              <!-- 주사위 결과 박스 -->
+              <div id="diceResultBox" class="absolute inset-0 flex items-center justify-center gap-3 z-10 opacity-0 transition-opacity duration-300">
+                <div id="dice1" class="w-14 h-14 bg-white rounded-xl shadow-md flex items-center justify-center text-3xl font-bold text-slate-900 border border-slate-200">
                   ⚂
                 </div>
-                <div id="dice2" class="w-16 h-16 bg-white rounded-2xl shadow-2xl flex items-center justify-center text-4xl font-black text-black font-cyber border-2 border-gray-300">
+                <div id="dice2" class="w-14 h-14 bg-white rounded-xl shadow-md flex items-center justify-center text-3xl font-bold text-slate-900 border border-slate-200">
                   ⚄
                 </div>
               </div>
             </div>
-            <div id="oddEvenAnnounce" class="text-lg font-cyber font-bold text-gray-300 tracking-wider">
-              베팅을 완료하면 주사위가 굴러갑니다!
+            <div id="oddEvenAnnounce" class="text-sm font-semibold text-slate-300">
+              타겟을 선택하고 베팅하기를 눌러주세요
             </div>
           </div>
 
           <!-- 2) 하이로우 카드 스테이지 -->
           <div id="stageHighLow" class="game-stage hidden w-full h-full flex flex-col items-center justify-center gap-6">
-            <div class="flex items-center justify-center gap-8 perspective-1000">
+            <div class="flex items-center justify-center gap-6 perspective-1000">
               
-              <!-- 카드 1: 기준 카드 -->
+              <!-- 베이스 카드 -->
               <div class="flex flex-col items-center gap-2">
-                <span class="text-xs text-gray-400 font-bold uppercase">Base Card</span>
-                <div id="baseCard" class="w-28 h-40 bg-gradient-to-br from-white to-gray-200 text-black rounded-2xl border-2 border-cyber-neonCyan shadow-xl flex flex-col justify-between p-3 select-none">
-                  <div class="flex justify-between items-center text-lg font-bold text-red-600">
+                <span class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">기준 카드</span>
+                <div id="baseCard" class="w-28 h-40 bg-white text-slate-900 rounded-xl border border-slate-300 shadow-md flex flex-col justify-between p-3 select-none">
+                  <div class="flex justify-between items-center text-sm font-bold text-rose-600">
                     <span id="baseCardTop">♥ 7</span>
                   </div>
-                  <div class="text-4xl text-center text-red-600">♥</div>
-                  <div class="flex justify-between items-center text-lg font-bold text-red-600 rotate-180">
+                  <div class="text-3xl text-center text-rose-600">♥</div>
+                  <div class="flex justify-between items-center text-sm font-bold text-rose-600 rotate-180">
                     <span id="baseCardBottom">♥ 7</span>
                   </div>
                 </div>
               </div>
 
-              <!-- VS 마크 -->
-              <div class="font-cyber font-extrabold text-2xl text-cyber-neonYellow">VS</div>
+              <!-- VS 배지 -->
+              <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-slate-300">VS</div>
 
-              <!-- 카드 2: 다음 카드 (3D 플립) -->
+              <!-- 넥스트 카드 (3D 플립) -->
               <div class="flex flex-col items-center gap-2">
-                <span class="text-xs text-gray-400 font-bold uppercase">Next Card</span>
+                <span class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">다음 카드</span>
                 <div id="nextCardContainer" class="w-28 h-40 relative transform-style-3d transition-transform duration-700">
-                  <!-- 카드 뒷면 (플립 전) -->
-                  <div id="nextCardBack" class="absolute inset-0 w-full h-full bg-gradient-to-br from-indigo-900 via-purple-900 to-black rounded-2xl border-2 border-cyber-neonPink flex items-center justify-center backface-hidden shadow-xl">
-                    <i data-lucide="help-circle" class="w-10 h-10 text-cyber-neonPink animate-pulse"></i>
+                  <!-- 카드 뒷면 -->
+                  <div id="nextCardBack" class="absolute inset-0 w-full h-full bg-slate-800 rounded-xl border border-slate-700 flex flex-col items-center justify-center backface-hidden shadow-md">
+                    <i data-lucide="help-circle" class="w-8 h-8 text-slate-500"></i>
                   </div>
-                  <!-- 카드 앞면 (플립 후) -->
-                  <div id="nextCardFront" class="absolute inset-0 w-full h-full bg-white text-black rounded-2xl border-2 border-cyber-neonYellow flex flex-col justify-between p-3 backface-hidden rotate-y-180 shadow-2xl select-none">
-                    <div class="flex justify-between items-center text-lg font-bold text-black">
+                  <!-- 카드 앞면 -->
+                  <div id="nextCardFront" class="absolute inset-0 w-full h-full bg-white text-slate-900 rounded-xl border border-slate-300 flex flex-col justify-between p-3 backface-hidden rotate-y-180 shadow-md select-none">
+                    <div class="flex justify-between items-center text-sm font-bold text-slate-900">
                       <span id="nextCardTop">♠ K</span>
                     </div>
-                    <div class="text-4xl text-center text-black" id="nextCardSuit">♠</div>
-                    <div class="flex justify-between items-center text-lg font-bold text-black rotate-180">
+                    <div class="text-3xl text-center text-slate-900" id="nextCardSuit">♠</div>
+                    <div class="flex justify-between items-center text-sm font-bold text-slate-900 rotate-180">
                       <span id="nextCardBottom">♠ K</span>
                     </div>
                   </div>
@@ -241,150 +235,146 @@
               </div>
 
             </div>
-            <div id="highLowAnnounce" class="text-lg font-cyber font-bold text-gray-300 tracking-wider">
+            <div id="highLowAnnounce" class="text-sm font-semibold text-slate-300">
               다음 카드가 기준보다 높을까? 낮을까?
             </div>
           </div>
 
-          <!-- 3) 사이버 경마 스테이지 (HTML5 Canvas 2D) -->
+          <!-- 3) 스피드 레이스 스테이지 (Canvas 2D) -->
           <div id="stageHorseRace" class="game-stage hidden w-full h-full flex flex-col items-center justify-center">
-            <canvas id="raceCanvas" width="560" height="240" class="w-full h-auto bg-cyber-dark/80 rounded-xl border border-cyber-border shadow-inner"></canvas>
-            <div id="horseAnnounce" class="text-sm font-cyber font-bold text-gray-300 mt-2 tracking-wider">
-              레이스 트랙 준비 완료! 우승마를 선택하세요.
+            <canvas id="raceCanvas" width="560" height="240" class="w-full h-auto bg-slate-950 rounded-xl border border-slate-800"></canvas>
+            <div id="horseAnnounce" class="text-xs font-semibold text-slate-300 mt-2">
+              트랙 대기 완료! 우승 주자를 예측해보세요.
             </div>
           </div>
 
-          <!-- 라운드 결과 오버레이 (빅 승리/패배 연출) -->
-          <div id="resultOverlay" class="absolute inset-0 bg-black/85 backdrop-blur-sm z-30 flex flex-col items-center justify-center gap-3 opacity-0 pointer-events-none transition-opacity duration-300">
-            <div id="resultIconBox" class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl font-black mb-1">
+          <!-- 결과 오버레이 (간결하고 깔끔한 모달 형태) -->
+          <div id="resultOverlay" class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm z-30 flex flex-col items-center justify-center gap-2.5 opacity-0 pointer-events-none transition-opacity duration-300">
+            <div id="resultIconBox" class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl font-bold mb-1">
               🏆
             </div>
-            <div id="resultTitle" class="font-cyber font-black text-3xl tracking-wider">
+            <div id="resultTitle" class="font-display font-extrabold text-2xl tracking-tight">
               VICTORY!
             </div>
-            <div id="resultDetail" class="text-gray-300 font-bold text-sm">
-              +1,900 칩 획득!
+            <div id="resultDetail" class="text-slate-300 font-medium text-sm">
+              +1,900 포인트 획득!
             </div>
-            <div class="text-xs text-cyber-neonCyan font-cyber animate-pulse">
-              NEXT ROUND STARTS IN 5 SECONDS...
+            <div class="text-xs text-slate-400 font-display">
+              다음 라운드까지 5초 대기...
             </div>
           </div>
 
         </div>
 
-        <!-- 하단 상태 메시지 바 -->
-        <div class="mt-4 flex items-center justify-between text-xs text-gray-400 bg-black/30 px-3 py-2 rounded-lg border border-cyber-border">
+        <!-- 하단 상태 바 -->
+        <div class="mt-4 flex items-center justify-between text-xs text-slate-400 bg-slate-950/60 px-3 py-2 rounded-lg border border-slate-800">
           <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-cyber-neonGreen"></span>
-            <span id="engineStatus">Ready for bets</span>
+            <span class="w-2 h-2 rounded-full bg-brand-emerald"></span>
+            <span id="engineStatus">Ready</span>
           </div>
-          <div id="payoutMultiplierNotice" class="font-cyber text-cyber-neonYellow">기본 배당 1.95x</div>
+          <div id="payoutMultiplierNotice" class="font-medium text-brand-indigo">기본 배당 1.95x</div>
         </div>
 
       </section>
 
-      <!-- RIGHT: 베팅 컨트롤 타워 (5 cols) -->
-      <section class="lg:col-span-5 bg-cyber-card border border-cyber-border rounded-2xl p-5 flex flex-col justify-between shadow-2xl gap-5">
+      <!-- RIGHT: 베팅 컨트롤러 (5 cols) -->
+      <section class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between shadow-sm gap-5">
         
         <div>
-          <h2 class="font-cyber font-bold text-base text-gray-200 flex items-center gap-2 mb-4">
-            <i data-lucide="target" class="w-5 h-5 text-cyber-neonCyan"></i>
-            BETTING CONTROLLER
+          <h2 class="font-display font-bold text-sm text-slate-200 flex items-center gap-2 mb-4">
+            <i data-lucide="sliders" class="w-4 h-4 text-brand-indigo"></i>
+            ACTION CONTROLLER
           </h2>
 
-          <!-- 1. 타겟 선택 (선택된 게임에 따라 동적 변경) -->
+          <!-- 1. 타겟 선택 -->
           <div class="mb-5">
-            <label class="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">1. 타겟 선택</label>
+            <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">1. 타겟 선택</label>
             
-            <!-- 홀짝 타겟 버튼 -->
+            <!-- 홀짝 타겟 -->
             <div id="targetOddEvenGroup" class="target-group grid grid-cols-2 gap-3">
-              <button data-target="ODD" class="bet-target-btn p-4 rounded-xl border-2 border-cyber-border bg-black/40 hover:border-cyber-neonCyan hover:bg-cyber-neonCyan/10 transition-all text-center group">
-                <div class="font-cyber font-black text-xl text-cyber-neonCyan group-hover:scale-105 transition-transform">홀 (ODD)</div>
-                <div class="text-xs text-gray-400 mt-1">1, 3, 5, 7, 9, 11</div>
+              <button data-target="ODD" class="bet-target-btn p-3.5 rounded-xl border border-slate-800 bg-slate-850 hover:border-brand-indigo hover:bg-slate-800 transition-all text-center">
+                <div class="font-display font-bold text-base text-slate-200">홀 (ODD)</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">합계: 1, 3, 5, 7, 9, 11</div>
               </button>
-              <button data-target="EVEN" class="bet-target-btn p-4 rounded-xl border-2 border-cyber-border bg-black/40 hover:border-cyber-neonPink hover:bg-cyber-neonPink/10 transition-all text-center group">
-                <div class="font-cyber font-black text-xl text-cyber-neonPink group-hover:scale-105 transition-transform">짝 (EVEN)</div>
-                <div class="text-xs text-gray-400 mt-1">2, 4, 6, 8, 10, 12</div>
+              <button data-target="EVEN" class="bet-target-btn p-3.5 rounded-xl border border-slate-800 bg-slate-850 hover:border-brand-indigo hover:bg-slate-800 transition-all text-center">
+                <div class="font-display font-bold text-base text-slate-200">짝 (EVEN)</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">합계: 2, 4, 6, 8, 10, 12</div>
               </button>
             </div>
 
-            <!-- 하이로우 타겟 버튼 -->
+            <!-- 하이로우 타겟 -->
             <div id="targetHighLowGroup" class="target-group hidden grid grid-cols-2 gap-3">
-              <button data-target="HIGH" class="bet-target-btn p-4 rounded-xl border-2 border-cyber-border bg-black/40 hover:border-cyber-neonGreen hover:bg-cyber-neonGreen/10 transition-all text-center group">
-                <div class="font-cyber font-black text-xl text-cyber-neonGreen group-hover:scale-105 transition-transform">HIGH (높음)</div>
-                <div class="text-xs text-gray-400 mt-1">기준 카드보다 큰 숫자</div>
+              <button data-target="HIGH" class="bet-target-btn p-3.5 rounded-xl border border-slate-800 bg-slate-850 hover:border-brand-indigo hover:bg-slate-800 transition-all text-center">
+                <div class="font-display font-bold text-base text-slate-200">HIGH (높음)</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">기준 카드보다 큰 수</div>
               </button>
-              <button data-target="LOW" class="bet-target-btn p-4 rounded-xl border-2 border-cyber-border bg-black/40 hover:border-cyber-neonPink hover:bg-cyber-neonPink/10 transition-all text-center group">
-                <div class="font-cyber font-black text-xl text-cyber-neonPink group-hover:scale-105 transition-transform">LOW (낮음)</div>
-                <div class="text-xs text-gray-400 mt-1">기준 카드보다 작은 숫자</div>
+              <button data-target="LOW" class="bet-target-btn p-3.5 rounded-xl border border-slate-800 bg-slate-850 hover:border-brand-indigo hover:bg-slate-800 transition-all text-center">
+                <div class="font-display font-bold text-base text-slate-200">LOW (낮음)</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">기준 카드보다 작은 수</div>
               </button>
             </div>
 
-            <!-- 경마 타겟 버튼 (4두) -->
+            <!-- 레이스 타겟 -->
             <div id="targetHorseGroup" class="target-group hidden grid grid-cols-2 gap-2">
-              <button data-target="HORSE_1" class="bet-target-btn p-2.5 rounded-xl border-2 border-cyber-border bg-black/40 hover:border-red-500 hover:bg-red-500/10 transition-all text-left">
-                <div class="flex justify-between items-center font-bold text-red-400 text-sm">
+              <button data-target="HORSE_1" class="bet-target-btn p-2.5 rounded-xl border border-slate-800 bg-slate-850 hover:border-slate-700 transition-all text-left">
+                <div class="flex justify-between items-center font-semibold text-slate-200 text-xs">
                   <span>1번 썬더볼트</span>
-                  <span class="text-xs bg-red-500/20 px-1.5 py-0.5 rounded font-cyber">x5.0</span>
+                  <span class="text-[10px] bg-rose-500/10 text-rose-400 px-1.5 py-0.5 rounded font-display">x5.0</span>
                 </div>
-                <div class="text-[10px] text-gray-400">초고배당 역배마</div>
               </button>
-              <button data-target="HORSE_2" class="bet-target-btn p-2.5 rounded-xl border-2 border-cyber-border bg-black/40 hover:border-blue-500 hover:bg-blue-500/10 transition-all text-left">
-                <div class="flex justify-between items-center font-bold text-blue-400 text-sm">
-                  <span>2번 사이버윙</span>
-                  <span class="text-xs bg-blue-500/20 px-1.5 py-0.5 rounded font-cyber">x2.5</span>
+              <button data-target="HORSE_2" class="bet-target-btn p-2.5 rounded-xl border border-slate-800 bg-slate-850 hover:border-slate-700 transition-all text-left">
+                <div class="flex justify-between items-center font-semibold text-slate-200 text-xs">
+                  <span>2번 블루윙</span>
+                  <span class="text-[10px] bg-blue-500/10 text-blue-400 px-1.5 py-0.5 rounded font-display">x2.5</span>
                 </div>
-                <div class="text-[10px] text-gray-400">안정적 스피더</div>
               </button>
-              <button data-target="HORSE_3" class="bet-target-btn p-2.5 rounded-xl border-2 border-cyber-border bg-black/40 hover:border-yellow-500 hover:bg-yellow-500/10 transition-all text-left">
-                <div class="flex justify-between items-center font-bold text-yellow-400 text-sm">
+              <button data-target="HORSE_3" class="bet-target-btn p-2.5 rounded-xl border border-slate-800 bg-slate-850 hover:border-slate-700 transition-all text-left">
+                <div class="flex justify-between items-center font-semibold text-slate-200 text-xs">
                   <span>3번 골드러시</span>
-                  <span class="text-xs bg-yellow-500/20 px-1.5 py-0.5 rounded font-cyber">x1.8</span>
+                  <span class="text-[10px] bg-amber-500/10 text-amber-400 px-1.5 py-0.5 rounded font-display">x1.8</span>
                 </div>
-                <div class="text-[10px] text-gray-400">인기 1위 정배마</div>
               </button>
-              <button data-target="HORSE_4" class="bet-target-btn p-2.5 rounded-xl border-2 border-cyber-border bg-black/40 hover:border-emerald-500 hover:bg-emerald-500/10 transition-all text-left">
-                <div class="flex justify-between items-center font-bold text-emerald-400 text-sm">
-                  <span>4번 네온고스트</span>
-                  <span class="text-xs bg-emerald-500/20 px-1.5 py-0.5 rounded font-cyber">x3.2</span>
+              <button data-target="HORSE_4" class="bet-target-btn p-2.5 rounded-xl border border-slate-800 bg-slate-850 hover:border-slate-700 transition-all text-left">
+                <div class="flex justify-between items-center font-semibold text-slate-200 text-xs">
+                  <span>4번 에메랄드</span>
+                  <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded font-display">x3.2</span>
                 </div>
-                <div class="text-[10px] text-gray-400">막판 뒷심 다크호스</div>
               </button>
             </div>
 
           </div>
 
-          <!-- 2. 베팅 금액 선택 -->
+          <!-- 2. 베팅 포인트 설정 -->
           <div class="mb-5">
             <div class="flex justify-between items-center mb-2">
-              <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">2. 베팅 칩 설정</label>
-              <span id="currentBetAmountText" class="font-cyber font-extrabold text-sm text-cyber-neonYellow">0 CHIPS</span>
+              <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">2. 포인트 설정</label>
+              <span id="currentBetAmountText" class="font-display font-bold text-sm text-brand-indigo">0 POINTS</span>
             </div>
             <div class="grid grid-cols-4 gap-2">
-              <button data-amount="1000" class="chip-add-btn py-2 rounded-lg bg-black/40 border border-cyber-border hover:border-cyber-gold hover:text-cyber-gold transition-colors font-cyber font-bold text-xs">
-                +1K
+              <button data-amount="1000" class="chip-add-btn py-2 rounded-lg bg-slate-850 border border-slate-800 hover:border-slate-700 hover:text-white transition-colors font-display font-semibold text-xs text-slate-300">
+                +1,000
               </button>
-              <button data-amount="5000" class="chip-add-btn py-2 rounded-lg bg-black/40 border border-cyber-border hover:border-cyber-gold hover:text-cyber-gold transition-colors font-cyber font-bold text-xs">
-                +5K
+              <button data-amount="5000" class="chip-add-btn py-2 rounded-lg bg-slate-850 border border-slate-800 hover:border-slate-700 hover:text-white transition-colors font-display font-semibold text-xs text-slate-300">
+                +5,000
               </button>
-              <button data-amount="10000" class="chip-add-btn py-2 rounded-lg bg-black/40 border border-cyber-border hover:border-cyber-gold hover:text-cyber-gold transition-colors font-cyber font-bold text-xs">
-                +10K
+              <button data-amount="10000" class="chip-add-btn py-2 rounded-lg bg-slate-850 border border-slate-800 hover:border-slate-700 hover:text-white transition-colors font-display font-semibold text-xs text-slate-300">
+                +10,000
               </button>
-              <button id="betAllInBtn" class="py-2 rounded-lg bg-red-600/20 border border-red-500/50 hover:bg-red-600 hover:text-white transition-all font-cyber font-black text-xs text-red-400">
-                ALL-IN!
+              <button id="betAllInBtn" class="py-2 rounded-lg bg-rose-500/10 border border-rose-500/30 hover:bg-rose-500 hover:text-white transition-all font-display font-bold text-xs text-rose-400">
+                ALL-IN
               </button>
             </div>
           </div>
         </div>
 
-        <!-- 3. 핵심 확정 버튼 (연타 방어 T02-C12 적용) -->
+        <!-- 3. 확정 버튼 -->
         <div class="space-y-2">
-          <button id="confirmBetBtn" class="w-full py-4 rounded-xl font-cyber font-black text-lg tracking-wider transition-all duration-200 bg-gradient-to-r from-cyber-neonCyan via-blue-500 to-cyber-neonPink text-black hover:opacity-95 active:scale-[0.98] shadow-lg shadow-cyber-neonCyan/20 flex items-center justify-center gap-2">
-            <i data-lucide="zap" class="w-5 h-5"></i>
-            <span id="confirmBetText">BETTING NOW</span>
+          <button id="confirmBetBtn" class="w-full py-3.5 rounded-xl font-semibold text-sm tracking-wide transition-all duration-200 bg-brand-indigo text-white hover:bg-brand-violet active:scale-[0.99] shadow-sm flex items-center justify-center gap-2">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span id="confirmBetText">베팅 확정하기</span>
           </button>
-          <div class="text-[11px] text-center text-gray-400">
-            * 10초 베팅 시간이 지나면 선택된 베팅으로 15초 판이 자동 시작됩니다.
+          <div class="text-[11px] text-center text-slate-500">
+            * 베팅 확정을 누르지 않으면 포인트 차감 없이 관전 모드로 진행됩니다.
           </div>
         </div>
 
@@ -393,39 +383,39 @@
     </div>
 
     <!-- 3. 최근 20회 히스토리 & 난이도 비교 테이블 (NFR & T02-C16) -->
-    <section class="bg-cyber-card border border-cyber-border rounded-2xl p-5 shadow-xl">
-      <div class="flex flex-wrap items-center justify-between gap-3 mb-4 border-b border-cyber-border pb-3">
+    <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4 border-b border-slate-800 pb-3">
         <div class="flex items-center space-x-2">
-          <i data-lucide="history" class="w-5 h-5 text-cyber-neonCyan"></i>
-          <h2 class="font-cyber font-bold text-sm tracking-wider text-gray-200">
-            RECENT 20 ROUND LOGS (단일 난이도 House Edge 비교)
+          <i data-lucide="history" class="w-4 h-4 text-brand-indigo"></i>
+          <h2 class="font-display font-bold text-xs tracking-wider text-slate-200 uppercase">
+            RECENT 20 ROUNDS (난이도 파라미터 비교)
           </h2>
         </div>
-        <div class="flex items-center gap-4 text-xs font-bold">
-          <span class="text-gray-400">최근 승률: <span id="winRateText" class="text-cyber-neonGreen font-cyber">0%</span></span>
-          <span class="text-gray-400">누적 손익: <span id="netProfitText" class="font-cyber">0 CHIPS</span></span>
-          <button id="clearHistoryBtn" class="text-gray-500 hover:text-red-400 transition-colors text-[11px]">기록 초기화</button>
+        <div class="flex items-center gap-4 text-xs font-semibold">
+          <span class="text-slate-400">최근 승률: <span id="winRateText" class="text-brand-emerald font-display">0%</span></span>
+          <span class="text-slate-400">누적 손익: <span id="netProfitText" class="font-display text-slate-300">0 POINTS</span></span>
+          <button id="clearHistoryBtn" class="text-slate-500 hover:text-rose-400 transition-colors text-[11px]">기록 비우기</button>
         </div>
       </div>
 
-      <!-- 테이블 스크롤 컨테이너 -->
+      <!-- 테이블 -->
       <div class="overflow-x-auto max-h-56">
         <table class="w-full text-left border-collapse text-xs">
           <thead>
-            <tr class="border-b border-cyber-border/70 text-gray-400 uppercase font-cyber text-[10px]">
-              <th class="py-2 px-3">#</th>
-              <th class="py-2 px-3">Game</th>
-              <th class="py-2 px-3">난이도 (House Edge)</th>
-              <th class="py-2 px-3">Target</th>
-              <th class="py-2 px-3">Result</th>
-              <th class="py-2 px-3">Bet Amount</th>
-              <th class="py-2 px-3 text-right">Payout / PnL</th>
+            <tr class="border-b border-slate-800 text-slate-400 uppercase font-display text-[10px]">
+              <th class="py-2.5 px-3">#</th>
+              <th class="py-2.5 px-3">Game</th>
+              <th class="py-2.5 px-3">난이도 (House Edge)</th>
+              <th class="py-2.5 px-3">Target</th>
+              <th class="py-2.5 px-3">Result</th>
+              <th class="py-2.5 px-3">Bet Points</th>
+              <th class="py-2.5 px-3 text-right">PnL</th>
             </tr>
           </thead>
-          <tbody id="historyTableBody" class="divide-y divide-cyber-border/40 font-mono">
+          <tbody id="historyTableBody" class="divide-y divide-slate-800/60 font-mono">
             <tr>
-              <td colspan="7" class="text-center py-6 text-gray-500">
-                아직 진행된 라운드가 없습니다. 30초 베팅을 시작해보세요!
+              <td colspan="7" class="text-center py-6 text-slate-500">
+                아직 진행된 라운드가 없습니다. 30초 챌린지를 시작해보세요!
               </td>
             </tr>
           </tbody>
@@ -436,39 +426,35 @@
   </main>
 
   <!-- ==================== FOOTER ==================== -->
-  <footer class="border-t border-cyber-border bg-cyber-card/50 py-3 px-4 text-center text-xs text-gray-400">
+  <footer class="border-t border-slate-800/80 bg-slate-900/40 py-3 px-4 text-center text-xs text-slate-500">
     <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-2">
-      <div>© 2026 CYBER CASINO 30s • Zero-Backend Architecture • Fail-safe LocalStorage</div>
-      <div class="flex items-center gap-3">
-        <span class="inline-flex items-center gap-1 text-cyber-neonGreen"><span class="w-1.5 h-1.5 rounded-full bg-cyber-neonGreen"></span> PC 1366 / 1920 Compatible</span>
-        <span class="inline-flex items-center gap-1 text-cyber-neonCyan"><span class="w-1.5 h-1.5 rounded-full bg-cyber-neonCyan"></span> Debounce Defense Active</span>
+      <div>© 2026 LUCKY LAB 30s • Modern Web Standards • LocalStorage Fail-safe</div>
+      <div class="flex items-center gap-3 text-[11px]">
+        <span class="inline-flex items-center gap-1 text-slate-400"><span class="w-1.5 h-1.5 rounded-full bg-brand-emerald"></span> 1366 / 1920 Compatible</span>
+        <span class="inline-flex items-center gap-1 text-slate-400"><span class="w-1.5 h-1.5 rounded-full bg-brand-indigo"></span> Debounce Protected</span>
       </div>
     </div>
   </footer>
 
-  <!-- ==================== MODALS ==================== -->
-
-  <!-- 파산(Bust) 긴급 구호금 모달 -->
-  <div id="bustModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
-    <div class="bg-cyber-card border-2 border-red-500 rounded-2xl max-w-md w-full p-6 text-center shadow-2xl shadow-red-500/20 transform scale-95 transition-transform duration-300">
-      <div class="w-16 h-16 rounded-full bg-red-500/20 border border-red-500 text-red-500 mx-auto flex items-center justify-center text-3xl mb-4 animate-bounce">
-        💸
+  <!-- ==================== RECOVERY MODAL ==================== -->
+  <div id="bustModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 text-center shadow-xl transform scale-95 transition-transform duration-300">
+      <div class="w-12 h-12 rounded-full bg-rose-500/10 text-rose-400 mx-auto flex items-center justify-center text-xl mb-3">
+        🌱
       </div>
-      <h3 class="font-cyber font-black text-2xl text-red-500 mb-2">BANKRUPT! (파산)</h3>
-      <p class="text-sm text-gray-300 mb-6">
-        모든 칩을 잃고 깡통을 찼습니다! <br>
-        하지만 카지노 대부는 당신에게 한 번 더 기회를 줍니다.
+      <h3 class="font-display font-bold text-lg text-slate-100 mb-1.5">포인트 소진 안내</h3>
+      <p class="text-xs text-slate-400 mb-5 leading-relaxed">
+        모든 포인트를 소진했습니다.<br>
+        새로운 도전을 위해 지원 포인트를 즉시 리필해드립니다.
       </p>
-      <button id="bailoutBtn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-red-500 to-cyber-neonYellow text-black font-cyber font-black text-sm tracking-wider hover:opacity-95 transition-all shadow-lg">
-        긴급 구호금 5,000 CHIPS 받기
+      <button id="bailoutBtn" class="w-full py-2.5 rounded-xl bg-brand-indigo text-white font-semibold text-xs tracking-wide hover:bg-brand-violet transition-all shadow-sm">
+        지원 포인트 5,000 충전하기
       </button>
     </div>
   </div>
 
-  <!-- 메인 JS 파일 임포트 -->
   <script src="app.js"></script>
   <script>
-    // Lucide 아이콘 초기화
     lucide.createIcons();
   </script>
 </body>

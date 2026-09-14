@@ -304,22 +304,22 @@ class CyberCasinoGame {
     if (this.phase !== 'BETTING') return;
     this.currentMode = mode;
     if (mode === 'SAFE') {
-      this.dom.modeSafeBtn.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-cyber-neonCyan text-black shadow";
-      this.dom.modeHighrollerBtn.className = "px-3 py-1.5 rounded-lg text-xs font-bold text-gray-400 hover:text-cyber-neonYellow transition-all";
+      this.dom.modeSafeBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-brand-indigo text-white shadow-sm";
+      this.dom.modeHighrollerBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all";
     } else {
-      this.dom.modeHighrollerBtn.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-cyber-neonYellow text-black shadow";
-      this.dom.modeSafeBtn.className = "px-3 py-1.5 rounded-lg text-xs font-bold text-gray-400 hover:text-cyber-neonCyan transition-all";
+      this.dom.modeHighrollerBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-brand-indigo text-white shadow-sm";
+      this.dom.modeSafeBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all";
     }
     this.updatePayoutNotice();
   }
 
   updatePayoutNotice() {
     if (this.selectedGame === 'ODD_EVEN') {
-      this.dom.payoutMultiplierNotice.innerText = this.currentMode === 'SAFE' ? "기본 배당 1.95x (수수료 5%)" : "하이롤러 2.00x (7나오면 올수거!)";
+      this.dom.payoutMultiplierNotice.innerText = this.currentMode === 'SAFE' ? "기본 배당 1.95x (수수료 5%)" : "챌린지 2.00x (7 나오면 하우스 회수)";
     } else if (this.selectedGame === 'HIGH_LOW') {
-      this.dom.payoutMultiplierNotice.innerText = this.currentMode === 'SAFE' ? "동적 배당 1.2x ~ 5.0x" : "하이롤러 잭팟 배당 x3 적용!";
+      this.dom.payoutMultiplierNotice.innerText = this.currentMode === 'SAFE' ? "동적 배당 1.2x ~ 5.0x" : "챌린지 잭팟 배당 x3 적용";
     } else {
-      this.dom.payoutMultiplierNotice.innerText = this.currentMode === 'SAFE' ? "경마 고유 배당 (1.8x ~ 5.0x)" : "하이롤러 승리 시 추가 보너스 칩!";
+      this.dom.payoutMultiplierNotice.innerText = this.currentMode === 'SAFE' ? "레이스 고유 배당 (1.8x ~ 5.0x)" : "챌린지 승리 시 보너스 포인트!";
     }
   }
 
@@ -327,12 +327,12 @@ class CyberCasinoGame {
     this.isPaused = !this.isPaused;
     if (this.isPaused) {
       this.dom.pauseIcon.setAttribute('data-lucide', 'play');
-      this.dom.engineStatus.innerText = "Game Paused";
-      this.dom.engineStatus.previousElementSibling.className = "w-2 h-2 rounded-full bg-yellow-500 animate-ping";
+      this.dom.engineStatus.innerText = "Paused";
+      this.dom.engineStatus.previousElementSibling.className = "w-2 h-2 rounded-full bg-amber-400 animate-ping";
     } else {
       this.dom.pauseIcon.setAttribute('data-lucide', 'pause');
-      this.dom.engineStatus.innerText = "Game Running";
-      this.dom.engineStatus.previousElementSibling.className = "w-2 h-2 rounded-full bg-cyber-neonGreen";
+      this.dom.engineStatus.innerText = "Ready";
+      this.dom.engineStatus.previousElementSibling.className = "w-2 h-2 rounded-full bg-brand-emerald";
     }
     lucide.createIcons();
   }
@@ -345,7 +345,7 @@ class CyberCasinoGame {
 
     // 탭 스타일 초기화
     [this.dom.tabOddEven, this.dom.tabHighLow, this.dom.tabHorseRace].forEach(btn => {
-      btn.className = "game-tab-btn px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition-all text-gray-400 hover:text-white bg-black/30";
+      btn.className = "game-tab-btn px-3.5 py-2 rounded-xl font-semibold text-xs flex items-center gap-1.5 transition-all text-slate-400 hover:text-white bg-slate-850";
     });
 
     // 스테이지 초기화
@@ -354,17 +354,17 @@ class CyberCasinoGame {
     this.dom.stageHorseRace.classList.add('hidden');
 
     if (gameKey === 'ODD_EVEN') {
-      this.dom.tabOddEven.className = "game-tab-btn active px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition-all bg-cyber-neonCyan text-black shadow-lg shadow-cyber-neonCyan/20";
+      this.dom.tabOddEven.className = "game-tab-btn active px-3.5 py-2 rounded-xl font-semibold text-xs flex items-center gap-1.5 transition-all bg-brand-indigo text-white shadow-sm";
       this.dom.stageOddEven.classList.remove('hidden');
-      this.dom.currentGameDesc.innerText = "주사위 2개의 합이 홀수인가 짝수인가?";
+      this.dom.currentGameDesc.innerText = "두 주사위의 합이 홀수일까 짝수일까?";
     } else if (gameKey === 'HIGH_LOW') {
-      this.dom.tabHighLow.className = "game-tab-btn active px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition-all bg-cyber-neonPink text-white shadow-lg shadow-cyber-neonPink/20";
+      this.dom.tabHighLow.className = "game-tab-btn active px-3.5 py-2 rounded-xl font-semibold text-xs flex items-center gap-1.5 transition-all bg-brand-indigo text-white shadow-sm";
       this.dom.stageHighLow.classList.remove('hidden');
       this.dom.currentGameDesc.innerText = "다음 카드가 기준 카드보다 큰가 작은가?";
     } else if (gameKey === 'HORSE_RACE') {
-      this.dom.tabHorseRace.className = "game-tab-btn active px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition-all bg-cyber-neonYellow text-black shadow-lg shadow-cyber-neonYellow/20";
+      this.dom.tabHorseRace.className = "game-tab-btn active px-3.5 py-2 rounded-xl font-semibold text-xs flex items-center gap-1.5 transition-all bg-brand-indigo text-white shadow-sm";
       this.dom.stageHorseRace.classList.remove('hidden');
-      this.dom.currentGameDesc.innerText = "사이버 서킷을 가장 먼저 통과할 우승마는?";
+      this.dom.currentGameDesc.innerText = "서킷을 가장 먼저 통과할 1등 주자는?";
       this.initHorseRaceCanvas();
     }
 
@@ -436,9 +436,9 @@ class CyberCasinoGame {
     }
 
     this.isBetConfirmed = true;
-    this.dom.confirmBetBtn.className = "w-full py-4 rounded-xl font-cyber font-black text-lg tracking-wider transition-all duration-200 bg-cyber-neonGreen text-black shadow-lg shadow-cyber-neonGreen/30 flex items-center justify-center gap-2 cursor-default";
+    this.dom.confirmBetBtn.className = "w-full py-3.5 rounded-xl font-semibold text-sm tracking-wide transition-all duration-200 bg-brand-emerald text-white shadow-sm flex items-center justify-center gap-2 cursor-default";
     this.dom.confirmBetText.innerText = "✓ 베팅 완료 (준비완료)";
-    this.dom.phaseGuide.innerText = `베팅 확정 완료: [${this.selectedTarget}]에 ${this.currentBetAmount.toLocaleString()}칩!`;
+    this.dom.phaseGuide.innerText = `베팅 완료: [${this.selectedTarget}]에 ${this.currentBetAmount.toLocaleString()}P!`;
     
     FX.playBeep(950, 'sine', 0.15);
   }
@@ -473,13 +473,10 @@ class CyberCasinoGame {
 
   transitionNextPhase() {
     if (this.phase === 'BETTING') {
-      // 10초 베팅 완료 -> 15초 도파민 액션 시작
       this.startActionPhase();
     } else if (this.phase === 'ACTION') {
-      // 15초 액션 종료 -> 5초 정산 및 리셋 시작
       this.startSettlementPhase();
     } else if (this.phase === 'SETTLEMENT') {
-      // 5초 정산 종료 -> 다시 10초 베팅 페이즈로 자동 초기화 (T02-C08, C09)
       this.startBettingPhase();
     }
   }
@@ -489,9 +486,9 @@ class CyberCasinoGame {
     this.phase = 'BETTING';
     this.phaseTimeLeft = 10.0;
     this.isActionLocked = false;
-    this.isBetConfirmed = false; // 새 라운드 시작 시 베팅 확정 상태 초기화!
-    this.currentBetAmount = 0; // 베팅 금액 초기화
-    this.clearTargetSelection(); // 타겟 선택 초기화
+    this.isBetConfirmed = false;
+    this.currentBetAmount = 0;
+    this.clearTargetSelection();
     this.updateBetDisplay();
     this.roundNumber += 1;
 
@@ -503,19 +500,18 @@ class CyberCasinoGame {
     }
 
     // UI 복원
-    this.dom.phaseBadge.className = "px-3 py-1 text-xs font-extrabold rounded-lg uppercase tracking-wider bg-cyber-neonGreen/20 text-cyber-neonGreen border border-cyber-neonGreen/40 flex items-center gap-1.5";
-    this.dom.phaseBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-cyber-neonGreen animate-ping"></span> 베팅 페이즈 (10초)`;
+    this.dom.phaseBadge.className = "px-2.5 py-1 text-xs font-bold rounded-lg uppercase tracking-wider bg-brand-emerald/15 text-brand-emerald border border-brand-emerald/30 flex items-center gap-1.5";
+    this.dom.phaseBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-brand-emerald animate-ping"></span> 베팅 페이즈 (10초)`;
     this.dom.roundCounter.innerText = `ROUND #${this.roundNumber}`;
-    this.dom.phaseGuide.innerText = "타겟과 칩을 고른 후 [BETTING NOW]를 눌러주세요!";
+    this.dom.phaseGuide.innerText = "타겟과 포인트를 고른 후 [베팅 확정하기]를 눌러주세요";
     this.dom.confirmBetBtn.disabled = false;
-    this.dom.confirmBetBtn.className = "w-full py-4 rounded-xl font-cyber font-black text-lg tracking-wider transition-all duration-200 bg-gradient-to-r from-cyber-neonCyan via-blue-500 to-cyber-neonPink text-black hover:opacity-95 active:scale-[0.98] shadow-lg shadow-cyber-neonCyan/20 flex items-center justify-center gap-2";
-    this.dom.confirmBetText.innerText = "BETTING NOW";
+    this.dom.confirmBetBtn.className = "w-full py-3.5 rounded-xl font-semibold text-sm tracking-wide transition-all duration-200 bg-brand-indigo text-white hover:bg-brand-violet active:scale-[0.99] shadow-sm flex items-center justify-center gap-2";
+    this.dom.confirmBetText.innerText = "베팅 확정하기";
     this.dom.resultOverlay.classList.add('opacity-0', 'pointer-events-none');
 
     // 이전 스테이지 애니메이션 리셋
     this.resetStageVisuals();
 
-    // 칩이 0원이면 파산 모달 띄우기
     if (this.chips <= 0) {
       this.showBustModal();
     }
@@ -528,17 +524,15 @@ class CyberCasinoGame {
     this.isActionLocked = true;
     this.dom.confirmBetBtn.disabled = true;
 
-    this.dom.phaseBadge.className = "px-3 py-1 text-xs font-extrabold rounded-lg uppercase tracking-wider bg-cyber-neonPink/20 text-cyber-neonPink border border-cyber-neonPink/40 flex items-center gap-1.5";
-    this.dom.phaseBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-cyber-neonPink animate-ping"></span> 승부 진행 중 (15초)`;
+    this.dom.phaseBadge.className = "px-2.5 py-1 text-xs font-bold rounded-lg uppercase tracking-wider bg-brand-violet/15 text-brand-violet border border-brand-violet/30 flex items-center gap-1.5";
+    this.dom.phaseBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-brand-violet animate-ping"></span> 진행 중 (15초)`;
 
-    // [핵심] 유저가 직접 [BETTING NOW] 버튼을 눌러서 'isBetConfirmed'가 되었을 때만 돈을 건다!
     if (!this.isBetConfirmed || this.currentBetAmount <= 0 || !this.selectedTarget) {
       this.isObservingOnly = true;
-      this.dom.phaseGuide.innerText = "베팅 확정 없이 관전 중입니다 (칩 차감 없음)";
+      this.dom.phaseGuide.innerText = "베팅 없이 관전 중입니다 (포인트 차감 없음)";
     } else {
       this.isObservingOnly = false;
-      this.dom.phaseGuide.innerText = `[${this.selectedTarget}]에 ${this.currentBetAmount.toLocaleString()}칩 베팅 진행 중!`;
-      // 실제 확정 베팅한 경우에만 칩 차감!
+      this.dom.phaseGuide.innerText = `[${this.selectedTarget}]에 ${this.currentBetAmount.toLocaleString()}P 베팅 진행 중!`;
       this.chips -= this.currentBetAmount;
       StorageManager.setChips(this.chips);
       this.updateChipBalanceDisplay();
@@ -794,20 +788,20 @@ class CyberCasinoGame {
       this.updateChipBalanceDisplay();
 
       // 승리 연출
-      this.dom.resultIconBox.className = "w-16 h-16 rounded-2xl bg-cyber-neonGreen/20 border border-cyber-neonGreen text-cyber-neonGreen flex items-center justify-center text-3xl font-black mb-1";
+      this.dom.resultIconBox.className = "w-14 h-14 rounded-2xl bg-brand-emerald/15 border border-brand-emerald/30 text-brand-emerald flex items-center justify-center text-2xl font-bold mb-1";
       this.dom.resultIconBox.innerText = "🏆";
-      this.dom.resultTitle.className = "font-cyber font-black text-3xl tracking-wider text-cyber-neonGreen";
+      this.dom.resultTitle.className = "font-display font-extrabold text-2xl tracking-tight text-brand-emerald";
       this.dom.resultTitle.innerText = "VICTORY!";
-      this.dom.resultDetail.innerText = `+${pnl.toLocaleString()} 칩 획득! (${multiplier.toFixed(2)}x)`;
+      this.dom.resultDetail.innerText = `+${pnl.toLocaleString()} 포인트 획득! (${multiplier.toFixed(2)}x)`;
       FX.playConfetti();
       FX.playBeep(980, 'sine', 0.3);
     } else {
       // 패배 연출
-      this.dom.resultIconBox.className = "w-16 h-16 rounded-2xl bg-cyber-neonPink/20 border border-cyber-neonPink text-cyber-neonPink flex items-center justify-center text-3xl font-black mb-1";
-      this.dom.resultIconBox.innerText = "💀";
-      this.dom.resultTitle.className = "font-cyber font-black text-3xl tracking-wider text-cyber-neonPink";
-      this.dom.resultTitle.innerText = "BUST / DEFEAT";
-      this.dom.resultDetail.innerText = `-${this.currentBetAmount.toLocaleString()} 칩 손실...`;
+      this.dom.resultIconBox.className = "w-14 h-14 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-400 flex items-center justify-center text-2xl font-bold mb-1";
+      this.dom.resultIconBox.innerText = "✕";
+      this.dom.resultTitle.className = "font-display font-extrabold text-2xl tracking-tight text-rose-400";
+      this.dom.resultTitle.innerText = "ROUND FAILED";
+      this.dom.resultDetail.innerText = `-${this.currentBetAmount.toLocaleString()} 포인트 소진`;
       FX.playBeep(220, 'sawtooth', 0.25);
     }
 
@@ -818,7 +812,7 @@ class CyberCasinoGame {
     const logItem = {
       round: this.roundNumber,
       game: this.selectedGame,
-      mode: this.currentMode === 'SAFE' ? '일반 (5%)' : '하이롤러 (15%)',
+      mode: this.currentMode === 'SAFE' ? '스탠다드 (5%)' : '챌린지 (15%)',
       target: this.selectedTarget,
       result: res.displayResult,
       bet: this.currentBetAmount,
@@ -842,13 +836,13 @@ class CyberCasinoGame {
     if (history.length === 0) {
       this.dom.historyTableBody.innerHTML = `
         <tr>
-          <td colspan="7" class="text-center py-6 text-gray-500">
-            아직 진행된 라운드가 없습니다. 30초 베팅을 시작해보세요!
+          <td colspan="7" class="text-center py-6 text-slate-500">
+            아직 진행된 라운드가 없습니다. 30초 챌린지를 시작해보세요!
           </td>
         </tr>
       `;
       this.dom.winRateText.innerText = "0%";
-      this.dom.netProfitText.innerText = "0 CHIPS";
+      this.dom.netProfitText.innerText = "0 POINTS";
       return;
     }
 
@@ -859,21 +853,21 @@ class CyberCasinoGame {
       if (item.isWin) wins++;
       netProfit += item.pnl;
 
-      const pnlColor = item.pnl >= 0 ? 'text-cyber-neonGreen' : 'text-cyber-neonPink';
+      const pnlColor = item.pnl >= 0 ? 'text-brand-emerald' : 'text-rose-400';
       const pnlSign = item.pnl >= 0 ? `+${item.pnl.toLocaleString()}` : item.pnl.toLocaleString();
-      const modeBadgeColor = item.mode.includes('하이롤러') ? 'text-cyber-neonYellow border-cyber-neonYellow/40' : 'text-cyber-neonCyan border-cyber-neonCyan/40';
+      const modeBadgeColor = item.mode.includes('챌린지') ? 'text-brand-amber border-brand-amber/30' : 'text-brand-indigo border-brand-indigo/30';
 
       return `
         <tr class="hover:bg-white/5 transition-colors">
-          <td class="py-2.5 px-3 text-gray-400">#${item.round}</td>
-          <td class="py-2.5 px-3 font-bold">${this.formatGameName(item.game)}</td>
+          <td class="py-2.5 px-3 text-slate-400">#${item.round}</td>
+          <td class="py-2.5 px-3 font-semibold">${this.formatGameName(item.game)}</td>
           <td class="py-2.5 px-3">
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${modeBadgeColor}">${item.mode}</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-semibold border ${modeBadgeColor}">${item.mode}</span>
           </td>
-          <td class="py-2.5 px-3 text-gray-300 font-bold">${item.target}</td>
-          <td class="py-2.5 px-3 text-gray-400">${item.result}</td>
-          <td class="py-2.5 px-3 font-cyber">${item.bet.toLocaleString()}</td>
-          <td class="py-2.5 px-3 text-right font-cyber font-bold ${pnlColor}">${pnlSign}</td>
+          <td class="py-2.5 px-3 text-slate-300 font-semibold">${item.target}</td>
+          <td class="py-2.5 px-3 text-slate-400">${item.result}</td>
+          <td class="py-2.5 px-3 font-display">${item.bet.toLocaleString()}</td>
+          <td class="py-2.5 px-3 text-right font-display font-semibold ${pnlColor}">${pnlSign}</td>
         </tr>
       `;
     }).join('');
@@ -883,14 +877,14 @@ class CyberCasinoGame {
     const winRate = Math.round((wins / history.length) * 100);
     this.dom.winRateText.innerText = `${winRate}% (${wins}/${history.length})`;
     
-    this.dom.netProfitText.innerText = `${netProfit >= 0 ? '+' : ''}${netProfit.toLocaleString()} CHIPS`;
-    this.dom.netProfitText.className = `font-cyber font-bold ${netProfit >= 0 ? 'text-cyber-neonGreen' : 'text-cyber-neonPink'}`;
+    this.dom.netProfitText.innerText = `${netProfit >= 0 ? '+' : ''}${netProfit.toLocaleString()} POINTS`;
+    this.dom.netProfitText.className = `font-display font-semibold ${netProfit >= 0 ? 'text-brand-emerald' : 'text-rose-400'}`;
   }
 
   formatGameName(key) {
-    if (key === 'ODD_EVEN') return '🎲 홀짝';
+    if (key === 'ODD_EVEN') return '🎲 다이스';
     if (key === 'HIGH_LOW') return '🃏 하이로우';
-    return '🏇 경마';
+    return '🏁 레이스';
   }
 
   updateChipBalanceDisplay() {
