@@ -402,6 +402,13 @@ class CyberCasinoGame {
     element.classList.remove('border-slate-800', 'bg-slate-850');
     element.classList.add('border-brand-indigo', 'bg-brand-indigo/20', 'ring-2', 'ring-brand-indigo');
     
+    // 만약 포인트가 0이면 기본 1,000 포인트 자동 세팅! (유저 편의성 대폭 개선)
+    if (this.currentBetAmount === 0 && this.chips >= 1000) {
+      this.currentBetAmount = 1000;
+      this.updateBetDisplay();
+    }
+
+    this.dom.phaseGuide.innerText = `[${target}] 선택됨! 하단 [베팅 확정하기]를 눌러 완료하세요.`;
     FX.playBeep(600, 'sine', 0.08);
   }
 
@@ -425,7 +432,7 @@ class CyberCasinoGame {
   }
 
   updateBetDisplay() {
-    this.dom.currentBetAmountText.innerText = `${this.currentBetAmount.toLocaleString()} CHIPS`;
+    this.dom.currentBetAmountText.innerText = `${this.currentBetAmount.toLocaleString()} POINTS`;
   }
 
   // [핵심] 오직 이 '베팅하기' 버튼을 눌러야만 실제 베팅이 확정됨!
