@@ -394,18 +394,22 @@ class CyberCasinoGame {
     if (this.phase !== 'BETTING' || this.isActionLocked || this.isBetConfirmed) return;
     this.selectedTarget = target;
     
-    // 타겟 버튼 하이라이트 토글
+    // 타겟 버튼 하이라이트 토글 (모던 인디고 테마에 맞게 확실하게 강조)
     document.querySelectorAll('.bet-target-btn').forEach(btn => {
-      btn.classList.remove('ring-2', 'ring-white', 'scale-105', 'bg-white/10');
+      btn.classList.remove('border-brand-indigo', 'bg-brand-indigo/20', 'ring-2', 'ring-brand-indigo');
+      btn.classList.add('border-slate-800', 'bg-slate-850');
     });
-    element.classList.add('ring-2', 'ring-white', 'scale-105', 'bg-white/10');
+    element.classList.remove('border-slate-800', 'bg-slate-850');
+    element.classList.add('border-brand-indigo', 'bg-brand-indigo/20', 'ring-2', 'ring-brand-indigo');
+    
     FX.playBeep(600, 'sine', 0.08);
   }
 
   clearTargetSelection() {
     this.selectedTarget = null;
     document.querySelectorAll('.bet-target-btn').forEach(btn => {
-      btn.classList.remove('ring-2', 'ring-white', 'scale-105', 'bg-white/10');
+      btn.classList.remove('border-brand-indigo', 'bg-brand-indigo/20', 'ring-2', 'ring-brand-indigo');
+      btn.classList.add('border-slate-800', 'bg-slate-850');
     });
   }
 
@@ -580,7 +584,7 @@ class CyberCasinoGame {
     setTimeout(() => {
       if (this.phase !== 'ACTION') return;
       this.dom.diceCup.classList.remove('animate-shake');
-      this.dom.diceCup.style.transform = 'translateY(-100px)'; // 위로 번쩍 들어올림!
+      this.dom.diceCup.style.transform = 'translateY(-120px)'; // 위로 번쩍 들어올림!
 
       // 난수 주사위 2개 (1~6)
       const d1 = Math.floor(Math.random() * 6) + 1;

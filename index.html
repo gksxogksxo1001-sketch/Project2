@@ -170,25 +170,28 @@
         <div class="flex-1 min-h-[300px] flex items-center justify-center relative bg-slate-950/80 rounded-xl border border-slate-800/80 overflow-hidden p-4">
 
           <!-- 1) 주사위 홀짝 스테이지 -->
-          <div id="stageOddEven" class="game-stage w-full h-full flex flex-col items-center justify-center gap-6">
-            <div id="cupContainer" class="relative w-48 h-40 flex items-center justify-center">
-              <!-- 주사위 결과 박스 (바닥에 배치) -->
-              <div id="diceResultBox" class="absolute bottom-2 flex items-center justify-center gap-3 z-10 opacity-0 transition-opacity duration-300">
-                <div id="dice1" class="w-14 h-14 bg-white rounded-xl shadow-md flex items-center justify-center text-3xl font-bold text-slate-900 border border-slate-200">
+          <div id="stageOddEven" class="game-stage w-full h-full flex flex-col items-center justify-center gap-4">
+            <div id="cupContainer" class="relative w-64 h-56 flex flex-col items-center justify-end pb-2">
+              
+              <!-- 세련된 다크 큐브 쉐이커 컵 (위로 120px 번쩍 들어올림) -->
+              <div id="diceCup" class="absolute bottom-2 z-20 w-32 h-36 bg-slate-800 rounded-2xl border-2 border-slate-600 flex flex-col items-center justify-center shadow-2xl cursor-pointer transition-transform duration-700 ease-out">
+                <i data-lucide="box" class="w-10 h-10 text-brand-indigo/80 mb-1"></i>
+                <span class="text-[11px] font-bold tracking-wider text-slate-300">SHAKER</span>
+              </div>
+
+              <!-- 주사위 결과 박스 (바닥에 안착) -->
+              <div id="diceResultBox" class="flex items-center justify-center gap-4 z-10 opacity-0 transition-opacity duration-300 py-1">
+                <div id="dice1" class="w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center text-4xl font-bold text-slate-900 border border-slate-300">
                   ⚂
                 </div>
-                <div id="dice2" class="w-14 h-14 bg-white rounded-xl shadow-md flex items-center justify-center text-3xl font-bold text-slate-900 border border-slate-200">
+                <div id="dice2" class="w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center text-4xl font-bold text-slate-900 border border-slate-300">
                   ⚄
                 </div>
               </div>
-              <!-- 세련된 다크 큐브 쉐이커 컵 (위로 번쩍 들리는 애니메이션) -->
-              <div id="diceCup" class="absolute bottom-0 w-28 h-32 bg-slate-800/95 rounded-2xl border border-slate-600 flex flex-col items-center justify-center shadow-2xl relative z-20 cursor-pointer transition-transform duration-700 ease-out">
-                <i data-lucide="box" class="w-8 h-8 text-brand-indigo/70 mb-1"></i>
-                <span class="text-[10px] font-semibold text-slate-400">SHAKER</span>
-              </div>
+
             </div>
             <div id="oddEvenAnnounce" class="text-sm font-semibold text-slate-300">
-              타겟을 선택하고 베팅하기를 눌러주세요
+              타겟을 선택하고 [베팅 확정하기]를 눌러주세요
             </div>
           </div>
 
