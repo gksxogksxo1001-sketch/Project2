@@ -184,6 +184,7 @@ class CyberCasinoGame {
       // 하이로우
       baseCardTop: document.getElementById('baseCardTop'),
       baseCardBottom: document.getElementById('baseCardBottom'),
+      baseCardSuit: document.getElementById('baseCardSuit'),
       baseCard: document.getElementById('baseCard'),
       nextCardContainer: document.getElementById('nextCardContainer'),
       nextCardFront: document.getElementById('nextCardFront'),
@@ -916,23 +917,35 @@ class CyberCasinoGame {
   }
 
   renderBaseCard(card) {
-    const textColor = card.isRed ? 'text-red-600' : 'text-black';
-    this.dom.baseCardTop.className = `text-lg font-bold ${textColor}`;
-    this.dom.baseCardTop.innerText = `${card.suit} ${card.name}`;
-    this.dom.baseCardBottom.className = `text-lg font-bold ${textColor}`;
-    this.dom.baseCardBottom.innerText = `${card.suit} ${card.name}`;
-    this.dom.baseCard.querySelector('.text-4xl').className = `text-4xl text-center ${textColor}`;
-    this.dom.baseCard.querySelector('.text-4xl').innerText = card.suit;
+    const textColor = card.isRed ? 'text-rose-600' : 'text-slate-900';
+    if (this.dom.baseCardTop) {
+      this.dom.baseCardTop.className = `text-sm font-bold ${textColor}`;
+      this.dom.baseCardTop.innerText = `${card.suit} ${card.name}`;
+    }
+    if (this.dom.baseCardBottom) {
+      this.dom.baseCardBottom.className = `text-sm font-bold ${textColor}`;
+      this.dom.baseCardBottom.innerText = `${card.suit} ${card.name}`;
+    }
+    if (this.dom.baseCardSuit) {
+      this.dom.baseCardSuit.className = `text-3xl text-center ${textColor}`;
+      this.dom.baseCardSuit.innerText = card.suit;
+    }
   }
 
   renderNextCard(card) {
-    const textColor = card.isRed ? 'text-red-600' : 'text-black';
-    this.dom.nextCardTop.className = `text-lg font-bold ${textColor}`;
-    this.dom.nextCardTop.innerText = `${card.suit} ${card.name}`;
-    this.dom.nextCardBottom.className = `text-lg font-bold ${textColor}`;
-    this.dom.nextCardBottom.innerText = `${card.suit} ${card.name}`;
-    this.dom.nextCardSuit.className = `text-4xl text-center ${textColor}`;
-    this.dom.nextCardSuit.innerText = card.suit;
+    const textColor = card.isRed ? 'text-rose-600' : 'text-slate-900';
+    if (this.dom.nextCardTop) {
+      this.dom.nextCardTop.className = `text-sm font-bold ${textColor}`;
+      this.dom.nextCardTop.innerText = `${card.suit} ${card.name}`;
+    }
+    if (this.dom.nextCardBottom) {
+      this.dom.nextCardBottom.className = `text-sm font-bold ${textColor}`;
+      this.dom.nextCardBottom.innerText = `${card.suit} ${card.name}`;
+    }
+    if (this.dom.nextCardSuit) {
+      this.dom.nextCardSuit.className = `text-3xl text-center ${textColor}`;
+      this.dom.nextCardSuit.innerText = card.suit;
+    }
   }
 }
 
