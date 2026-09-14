@@ -465,8 +465,8 @@ class CyberCasinoGame {
     this.dom.timerText.innerText = `${timeFormatted}s`;
 
     let totalDuration = 10.0;
-    if (this.phase === 'ACTION') totalDuration = 15.0;
-    if (this.phase === 'SETTLEMENT') totalDuration = 5.0;
+    if (this.phase === 'ACTION') totalDuration = 10.0; // 10초 공개 연출
+    if (this.phase === 'SETTLEMENT') totalDuration = 5.0; // 5초 정답확인 & 돈 뿌리기
 
     const progressPercent = Math.min(100, Math.max(0, (this.phaseTimeLeft / totalDuration) * 100));
     this.dom.timerProgress.style.width = `${progressPercent}%`;
@@ -518,15 +518,15 @@ class CyberCasinoGame {
     }
   }
 
-  // 2단계: 15초 도파민 연출 페이즈
+  // 2단계: 10초 연출 및 정답 공개 페이즈
   startActionPhase() {
     this.phase = 'ACTION';
-    this.phaseTimeLeft = 15.0;
+    this.phaseTimeLeft = 10.0;
     this.isActionLocked = true;
     this.dom.confirmBetBtn.disabled = true;
 
     this.dom.phaseBadge.className = "px-2.5 py-1 text-xs font-bold rounded-lg uppercase tracking-wider bg-brand-violet/15 text-brand-violet border border-brand-violet/30 flex items-center gap-1.5";
-    this.dom.phaseBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-brand-violet animate-ping"></span> 진행 중 (15초)`;
+    this.dom.phaseBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-brand-violet animate-ping"></span> 결과 공개 중 (10초)`;
 
     if (!this.isBetConfirmed || this.currentBetAmount <= 0 || !this.selectedTarget) {
       this.isObservingOnly = true;
@@ -539,7 +539,7 @@ class CyberCasinoGame {
       this.updateChipBalanceDisplay();
     }
 
-    // 게임 엔진별 15초 연출 발동
+    // 게임 엔진별 10초 연출 발동
     if (this.selectedGame === 'ODD_EVEN') {
       this.runOddEvenAction();
     } else if (this.selectedGame === 'HIGH_LOW') {
@@ -555,16 +555,16 @@ class CyberCasinoGame {
     return 'HORSE_3';
   }
 
-  // 3단계: 5초 정산 및 결과 노출
+  // 3단계: 5초 정산 및 보상 지급 페이즈
   startSettlementPhase() {
     this.phase = 'SETTLEMENT';
     this.phaseTimeLeft = 5.0;
 
-    this.dom.phaseBadge.className = "px-3 py-1 text-xs font-extrabold rounded-lg uppercase tracking-wider bg-cyber-neonYellow/20 text-cyber-neonYellow border border-cyber-neonYellow/40 flex items-center gap-1.5";
-    this.dom.phaseBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-cyber-neonYellow animate-bounce"></span> 라운드 정산 (5초)`;
-    this.dom.phaseGuide.innerText = "정산 완료! 곧 다음 라운드가 시작됩니다.";
+    this.dom.phaseBadge.className = "px-2.5 py-1 text-xs font-bold rounded-lg uppercase tracking-wider bg-brand-amber/15 text-brand-amber border border-brand-amber/30 flex items-center gap-1.5";
+    this.dom.phaseBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-brand-amber animate-bounce"></span> 정답 확인 & 정산 (5초)`;
+    this.dom.phaseGuide.innerText = "포인트 정산 완료! 결과창을 확인하세요.";
 
-    // 정산 판정 및 칩 지급
+    // 정산 판정 및 포인트 지급
     this.settleRoundResult();
   }
 
@@ -574,13 +574,13 @@ class CyberCasinoGame {
   runOddEvenAction() {
     this.dom.diceResultBox.classList.add('opacity-0');
     this.dom.diceCup.classList.add('animate-shake');
-    this.dom.oddEvenAnnounce.innerText = "🎲 딜러가 컵을 맹렬하게 흔들고 있습니다...";
+    this.dom.oddEvenAnnounce.innerText = "🎲 쉐이커를 흔들고 있습니다...";
 
-    // 10초 동안 흔들다가 컵 오픈
+    // 4초 흔들고 컵을 위로 시원하게 오픈! (남은 6초 동안 주사위 결과 완벽 확인)
     setTimeout(() => {
       if (this.phase !== 'ACTION') return;
       this.dom.diceCup.classList.remove('animate-shake');
-      this.dom.diceCup.style.transform = 'translateY(-60px)';
+      this.dom.diceCup.style.transform = 'translateY(-100px)'; // 위로 번쩍 들어올림!
 
       // 난수 주사위 2개 (1~6)
       const d1 = Math.floor(Math.random() * 6) + 1;
@@ -594,7 +594,7 @@ class CyberCasinoGame {
 
       const isEven = (sum % 2 === 0);
       const outcomeText = isEven ? `짝 (${sum})` : `홀 (${sum})`;
-      this.dom.oddEvenAnnounce.innerText = `결과: 주사위 합 ${sum} [${outcomeText}]!`;
+      this.dom.oddEvenAnnounce.innerText = `정답 공개: 주사위 합 ${sum} [${outcomeText}]!`;
       FX.playBeep(520, 'sine', 0.2);
 
       this.roundResultData = {
@@ -602,7 +602,7 @@ class CyberCasinoGame {
         sum: sum,
         displayResult: outcomeText
       };
-    }, 10000);
+    }, 4000);
   }
 
   // [엔진 2] 하이로우 카드
@@ -610,11 +610,12 @@ class CyberCasinoGame {
     this.dom.highLowAnnounce.innerText = "🃏 다음 카드를 셔플하고 있습니다...";
     this.dom.nextCardContainer.classList.remove('rotate-y-180');
 
+    // 4초 셔플 후 3D 카드 플립 오픈! (남은 6초 동안 카드 결과 비교 확인)
     setTimeout(() => {
       if (this.phase !== 'ACTION') return;
       const nextCard = this.generateRandomCard();
       this.renderNextCard(nextCard);
-      this.dom.nextCardContainer.classList.add('rotate-y-180'); // 3D 플립
+      this.dom.nextCardContainer.classList.add('rotate-y-180'); // 3D 플립 오픈
 
       const isHigh = nextCard.val > this.currentBaseCard.val;
       const isLow = nextCard.val < this.currentBaseCard.val;
@@ -622,7 +623,7 @@ class CyberCasinoGame {
       if (isHigh) outcome = 'HIGH';
       if (isLow) outcome = 'LOW';
 
-      this.dom.highLowAnnounce.innerText = `새 카드 [${nextCard.suit} ${nextCard.name}]! 결과: [${outcome}]`;
+      this.dom.highLowAnnounce.innerText = `정답 공개 [${nextCard.suit} ${nextCard.name}]! 결과: [${outcome}]`;
       FX.playBeep(650, 'triangle', 0.2);
 
       this.roundResultData = {
@@ -630,18 +631,18 @@ class CyberCasinoGame {
         displayResult: `${nextCard.suit} ${nextCard.name} (${outcome})`
       };
 
-      // 넥스트 카드를 다음 판의 베이스 카드로 예약 (지금 바꾸지 않고 다음 판 세팅 때 반영!)
+      // 넥스트 카드를 다음 판의 베이스 카드로 예약 (다음 판 시작 때 교체)
       this.pendingNextBaseCard = nextCard;
-    }, 8000);
+    }, 4000);
   }
 
-  // [엔진 3] 사이버 경마 캔버스 엔진
+  // [엔진 3] 스피드 레이스 캔버스 엔진
   runHorseRaceAction() {
-    this.dom.horseAnnounce.innerText = "🏇 4마리의 사이버 호스가 게이트를 박차고 나갔습니다!";
+    this.dom.horseAnnounce.innerText = "🏁 4마리의 주자가 스타트 라인을 통과했습니다!";
     this.initHorseRace();
 
     let raceStartTime = Date.now();
-    const raceDuration = 12000; // 12초간 레이스
+    const raceDuration = 7000; // 7초간 레이스 후 3초간 1등 노출 (총 10초)
 
     const animateRace = () => {
       if (this.phase !== 'ACTION') return;
