@@ -110,6 +110,16 @@
           </div>
         </div>
 
+        <!-- 효과 제어: 음소거(Mute) & 모션 줄이기 (T02-C27) -->
+        <div class="flex items-center space-x-1 border border-slate-800 bg-slate-850 rounded-xl p-1">
+          <button id="muteToggleBtn" class="p-1.5 rounded-lg text-slate-400 hover:text-white transition-colors" title="음소거 켜기/끄기 (T02-C27)">
+            <i id="muteIcon" data-lucide="volume-2" class="w-4 h-4"></i>
+          </button>
+          <button id="motionToggleBtn" class="p-1.5 rounded-lg text-slate-400 hover:text-white transition-colors" title="연출/모션 줄이기 켜기/끄기 (T02-C27)">
+            <i id="motionIcon" data-lucide="sparkles" class="w-4 h-4"></i>
+          </button>
+        </div>
+
         <!-- 수동 일시정지 버튼 (T02-C15) -->
         <button id="pauseResumeBtn" class="p-2.5 rounded-xl border border-slate-800 bg-slate-850 hover:bg-slate-800 transition-colors text-slate-300 hover:text-white" title="일시정지 / 재개">
           <i id="pauseIcon" data-lucide="pause" class="w-4 h-4"></i>
@@ -385,19 +395,37 @@
 
     </div>
 
-    <!-- 3. 최근 20회 히스토리 & 난이도 비교 테이블 (NFR & T02-C16) -->
+    <!-- 3. 최근 20회 히스토리 & 난이도 비교 테이블 (카드 3: T02-C18 ~ C21 준수) -->
     <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm">
-      <div class="flex flex-wrap items-center justify-between gap-3 mb-4 border-b border-slate-800 pb-3">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-3 border-b border-slate-800 pb-3">
         <div class="flex items-center space-x-2">
           <i data-lucide="history" class="w-4 h-4 text-brand-indigo"></i>
           <h2 class="font-display font-bold text-xs tracking-wider text-slate-200 uppercase">
-            RECENT 20 ROUNDS (난이도 파라미터 비교)
+            RECENT 20 ROUNDS (카드 3: 난이도 단일값 10회 전후 비교 검증)
           </h2>
         </div>
         <div class="flex items-center gap-4 text-xs font-semibold">
           <span class="text-slate-400">최근 승률: <span id="winRateText" class="text-brand-emerald font-display">0%</span></span>
           <span class="text-slate-400">누적 손익: <span id="netProfitText" class="font-display text-slate-300">0 POINTS</span></span>
           <button id="clearHistoryBtn" class="text-slate-500 hover:text-rose-400 transition-colors text-[11px]">기록 비우기</button>
+        </div>
+      </div>
+
+      <!-- 카드 3: 변경 전(1~10회) vs 변경 후(11~20회) 비교 지표 배너 -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 text-xs font-medium">
+        <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-3 flex justify-between items-center">
+          <div>
+            <div class="text-[11px] text-brand-indigo font-bold">1~10회: 스탠다드 (수수료 5%)</div>
+            <div id="compareStandardStat" class="text-slate-400 text-[11px] mt-0.5">승률 0% • 평균 손익: 0P</div>
+          </div>
+          <span class="text-[10px] bg-brand-indigo/10 text-brand-indigo px-2 py-0.5 rounded font-semibold">안정형</span>
+        </div>
+        <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-3 flex justify-between items-center">
+          <div>
+            <div class="text-[11px] text-brand-amber font-bold">11~20회: 챌린지 (수수료 15% · 잭팟 x3)</div>
+            <div id="compareChallengeStat" class="text-slate-400 text-[11px] mt-0.5">승률 0% • 평균 손익: 0P</div>
+          </div>
+          <span class="text-[10px] bg-brand-amber/10 text-brand-amber px-2 py-0.5 rounded font-semibold">고수익·변동형</span>
         </div>
       </div>
 

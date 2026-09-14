@@ -73,21 +73,26 @@ const StorageManager = {
   }
 };
 
-// ==================== 2. SOUND & VISUAL EFFECTS ====================
+// ==================== 2. SOUND & VISUAL EFFECTS (T02-C26, C27 준수) ====================
 const FX = {
+  isMuted: false,
+  isReducedMotion: false,
+
   playConfetti() {
+    if (this.isReducedMotion) return; // 모션 줄이기 켜짐 시 즉시 실행 억제
     if (typeof confetti === 'function') {
       confetti({
         particleCount: 80,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ['#00e5ff', '#ff0055', '#ffdd00', '#00ff88']
+        colors: ['#6366f1', '#8b5cf6', '#10b981', '#f59e0b']
       });
     }
   },
 
-  // Web Audio API를 활용한 무외부파일 레트로 비프음 (에러 방지용)
+  // Web Audio API를 활용한 무외부파일 레트로 비프음 (음소거 지원)
   playBeep(freq = 440, type = 'sine', duration = 0.1) {
+    if (this.isMuted) return; // 음소거 켜짐 시 사운드 0ms 즉시 차단
     try {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       if (!AudioContext) return;
@@ -96,7 +101,7 @@ const FX = {
       const gain = ctx.createGain();
       osc.type = type;
       osc.frequency.setValueAtTime(freq, ctx.currentTime);
-      gain.gain.setValueAtTime(0.05, ctx.currentTime);
+      gain.gain.setValueAtTime(0.04, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
       osc.connect(gain);
       gain.connect(ctx.destination);
@@ -212,10 +217,15 @@ class CyberCasinoGame {
       resultIconBox: document.getElementById('resultIconBox'),
       resultTitle: document.getElementById('resultTitle'),
       resultDetail: document.getElementById('resultDetail'),
-      bustModal: document.getElementById('bustModal'),
-      bailoutBtn: document.getElementById('bailoutBtn'),
+      // 효과 제어 (카드 5: T02-C27)
+      muteToggleBtn: document.getElementById('muteToggleBtn'),
+      muteIcon: document.getElementById('muteIcon'),
+      motionToggleBtn: document.getElementById('motionToggleBtn'),
+      motionIcon: document.getElementById('motionIcon'),
 
-      // 히스토리
+      // 히스토리 & 비교 지표 (카드 3: T02-C18 ~ C21)
+      compareStandardStat: document.getElementById('compareStandardStat'),
+      compareChallengeStat: document.getElementById('compareChallengeStat'),
       historyTableBody: document.getElementById('historyTableBody'),
       winRateText: document.getElementById('winRateText'),
       netProfitText: document.getElementById('netProfitText'),
@@ -230,6 +240,30 @@ class CyberCasinoGame {
 
     // 2. 수동 일시정지 / 재개 (T02-C15)
     this.dom.pauseResumeBtn.addEventListener('click', () => this.togglePause());
+
+    // 2-1. 효과 제어: 음소거 켜기/끄기 (T02-C27)
+    if (this.dom.muteToggleBtn) {
+      this.dom.muteToggleBtn.addEventListener('click', () => {
+        FX.isMuted = !FX.isMuted;
+        this.dom.muteIcon.setAttribute('data-lucide', FX.isMuted ? 'volume-x' : 'volume-2');
+        this.dom.muteToggleBtn.className = FX.isMuted 
+          ? "p-1.5 rounded-lg bg-rose-500/20 text-rose-400 border border-rose-500/40 transition-colors" 
+          : "p-1.5 rounded-lg text-slate-400 hover:text-white transition-colors";
+        lucide.createIcons();
+      });
+    }
+
+    // 2-2. 효과 제어: 모션 줄이기 켜기/끄기 (T02-C27)
+    if (this.dom.motionToggleBtn) {
+      this.dom.motionToggleBtn.addEventListener('click', () => {
+        FX.isReducedMotion = !FX.isReducedMotion;
+        this.dom.motionIcon.setAttribute('data-lucide', FX.isReducedMotion ? 'sparkle' : 'sparkles');
+        this.dom.motionToggleBtn.className = FX.isReducedMotion 
+          ? "p-1.5 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/40 transition-colors" 
+          : "p-1.5 rounded-lg text-slate-400 hover:text-white transition-colors";
+        lucide.createIcons();
+      });
+    }
 
     // 3. 브라우저 탭 포커스 이탈 / 복귀 보호 (T02-C14)
     document.addEventListener('visibilitychange', () => {
@@ -862,9 +896,23 @@ class CyberCasinoGame {
     let wins = 0;
     let netProfit = 0;
 
+    // 카드 3: 단일 난이도 변경 전(스탠다드) vs 변경 후(챌린지) 10회 통계 분리 집계
+    let stdCount = 0, stdWins = 0, stdProfit = 0;
+    let chgCount = 0, chgWins = 0, chgProfit = 0;
+
     const rowsHtml = history.map(item => {
       if (item.isWin) wins++;
       netProfit += item.pnl;
+
+      if (item.mode.includes('스탠다드')) {
+        stdCount++;
+        if (item.isWin) stdWins++;
+        stdProfit += item.pnl;
+      } else {
+        chgCount++;
+        if (item.isWin) chgWins++;
+        chgProfit += item.pnl;
+      }
 
       const pnlColor = item.pnl >= 0 ? 'text-brand-emerald' : 'text-rose-400';
       const pnlSign = item.pnl >= 0 ? `+${item.pnl.toLocaleString()}` : item.pnl.toLocaleString();
@@ -886,6 +934,18 @@ class CyberCasinoGame {
     }).join('');
 
     this.dom.historyTableBody.innerHTML = rowsHtml;
+
+    // 카드 3 지표 배너 렌더링
+    if (this.dom.compareStandardStat) {
+      const stdWinRate = stdCount > 0 ? Math.round((stdWins / stdCount) * 100) : 0;
+      const stdAvg = stdCount > 0 ? Math.round(stdProfit / stdCount) : 0;
+      this.dom.compareStandardStat.innerText = `${stdCount}회 기록 • 승률 ${stdWinRate}% • 평균 손익: ${stdAvg >= 0 ? '+' : ''}${stdAvg.toLocaleString()}P`;
+    }
+    if (this.dom.compareChallengeStat) {
+      const chgWinRate = chgCount > 0 ? Math.round((chgWins / chgCount) * 100) : 0;
+      const chgAvg = chgCount > 0 ? Math.round(chgProfit / chgCount) : 0;
+      this.dom.compareChallengeStat.innerText = `${chgCount}회 기록 • 승률 ${chgWinRate}% • 평균 손익: ${chgAvg >= 0 ? '+' : ''}${chgAvg.toLocaleString()}P`;
+    }
 
     const winRate = Math.round((wins / history.length) * 100);
     this.dom.winRateText.innerText = `${winRate}% (${wins}/${history.length})`;
