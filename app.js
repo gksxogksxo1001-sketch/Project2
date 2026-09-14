@@ -230,6 +230,10 @@ class CyberCasinoGame {
       winRateText: document.getElementById('winRateText'),
       netProfitText: document.getElementById('netProfitText'),
       clearHistoryBtn: document.getElementById('clearHistoryBtn'),
+
+      // 파산 구제 모달
+      bustModal: document.getElementById('bustModal'),
+      bailoutBtn: document.getElementById('bailoutBtn'),
     };
   }
 
@@ -314,7 +318,9 @@ class CyberCasinoGame {
     });
 
     // 9. 파산 구제금 수령
-    this.dom.bailoutBtn.addEventListener('click', () => this.claimBailout());
+    if (this.dom.bailoutBtn) {
+      this.dom.bailoutBtn.addEventListener('click', () => this.claimBailout());
+    }
 
     // 10. 기록 초기화
     this.dom.clearHistoryBtn.addEventListener('click', () => {
@@ -712,7 +718,7 @@ class CyberCasinoGame {
         // 말 전진 로직 (무작위 스퍼트와 가속도)
         const horse = this.horses[i];
         if (horse.x < trackWidth) {
-          const speedDelta = (Math.random() * horse.maxSpeed) * (elapsed > 8000 ? horse.burst : 1);
+          const speedDelta = (Math.random() * horse.maxSpeed) * (elapsed > 5000 ? horse.burst : 1);
           horse.x += speedDelta;
         }
 
@@ -803,6 +809,7 @@ class CyberCasinoGame {
     }
 
     let isWin = false;
+    let isTie = false;
     let multiplier = 0;
 
     // 배당율 계산
@@ -815,7 +822,11 @@ class CyberCasinoGame {
         multiplier = this.currentMode === 'SAFE' ? 1.95 : 2.0;
       }
     } else if (this.selectedGame === 'HIGH_LOW') {
-      isWin = (this.selectedTarget === res.outcome);
+      if (res.outcome === 'TIE') {
+        isTie = true; // 무승부: 베팅금 전액 환불
+      } else {
+        isWin = (this.selectedTarget === res.outcome);
+      }
       multiplier = this.currentMode === 'SAFE' ? 2.0 : 3.0; // 하이롤러 모드 3배
     } else {
       isWin = (this.selectedTarget === res.outcome);
@@ -827,7 +838,21 @@ class CyberCasinoGame {
     let payout = 0;
     let pnl = -this.currentBetAmount;
 
-    if (isWin) {
+    if (isTie) {
+      // 무승부(TIE) 처리: 베팅금 전액 환불
+      payout = this.currentBetAmount;
+      pnl = 0;
+      this.chips += payout;
+      StorageManager.setChips(this.chips);
+      this.updateChipBalanceDisplay();
+
+      this.dom.resultIconBox.className = "w-14 h-14 rounded-2xl bg-blue-500/15 border border-blue-500/30 text-blue-400 flex items-center justify-center text-2xl font-bold mb-1";
+      this.dom.resultIconBox.innerText = "🤝";
+      this.dom.resultTitle.className = "font-display font-extrabold text-2xl tracking-tight text-blue-400";
+      this.dom.resultTitle.innerText = "TIE - DRAW!";
+      this.dom.resultDetail.innerText = `같은 숫자! 베팅금 ${this.currentBetAmount.toLocaleString()} 포인트 전액 환불`;
+      FX.playBeep(440, 'sine', 0.15);
+    } else if (isWin) {
       payout = Math.floor(this.currentBetAmount * multiplier);
       pnl = payout - this.currentBetAmount;
       this.chips += payout;
@@ -865,6 +890,7 @@ class CyberCasinoGame {
       bet: this.currentBetAmount,
       pnl: pnl,
       isWin: isWin,
+      isTie: isTie || false,
       time: new Date().toLocaleTimeString('ko-KR')
     };
 
