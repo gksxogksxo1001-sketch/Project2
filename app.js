@@ -44,12 +44,26 @@ const StorageManager = {
   },
 
   // 최근 20회 히스토리 관리 (FIFO 최대 20개 롤링)
+  // [T02-C25] 손상된 항목 sanitize: 각 필드가 유효하지 않으면 기본값 적용 또는 항목 제거
   getHistory() {
     try {
       const raw = localStorage.getItem(this.HISTORY_KEY);
       if (!raw) return [];
       const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed.slice(0, 20) : [];
+      if (!Array.isArray(parsed)) return [];
+      // 각 항목의 필드 유효성 검증 (sanitize)
+      return parsed.slice(0, 20).filter(item => {
+        if (!item || typeof item !== 'object') return false;
+        // 핵심 필드가 존재하고 유효한지 확인
+        if (typeof item.round !== 'number' || isNaN(item.round)) return false;
+        if (typeof item.pnl !== 'number' || isNaN(item.pnl)) return false;
+        if (typeof item.bet !== 'number' || isNaN(item.bet)) return false;
+        if (typeof item.game !== 'string') return false;
+        if (typeof item.mode !== 'string') return false;
+        if (typeof item.target !== 'string') return false;
+        if (typeof item.result !== 'string') return false;
+        return true;
+      });
     } catch (e) {
       return [];
     }
@@ -77,6 +91,25 @@ const StorageManager = {
 const FX = {
   isMuted: false,
   isReducedMotion: false,
+  _audioCtx: null, // [T02-C17] AudioContext 싱글톤: 10분 연속 실행 시 메모리 누수 방지
+
+  // [T02-C17] AudioContext 싱글톤 Getter (lazy init + 자동 resume)
+  _getAudioCtx() {
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      if (!this._audioCtx || this._audioCtx.state === 'closed') {
+        this._audioCtx = new AC();
+      }
+      // suspended 상태면 resume (브라우저 정책 대응)
+      if (this._audioCtx.state === 'suspended') {
+        this._audioCtx.resume().catch(() => {});
+      }
+      return this._audioCtx;
+    } catch (e) {
+      return null;
+    }
+  },
 
   playConfetti() {
     if (this.isReducedMotion) return; // 모션 줄이기 켜짐 시 즉시 실행 억제
@@ -90,13 +123,12 @@ const FX = {
     }
   },
 
-  // Web Audio API를 활용한 무외부파일 레트로 비프음 (음소거 지원)
+  // [T02-C17] Web Audio API 싱글톤 비프음 (AudioContext 1개만 재사용)
   playBeep(freq = 440, type = 'sine', duration = 0.1) {
     if (this.isMuted) return; // 음소거 켜짐 시 사운드 0ms 즉시 차단
     try {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContext) return;
-      const ctx = new AudioContext();
+      const ctx = this._getAudioCtx();
+      if (!ctx) return;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = type;
@@ -107,6 +139,7 @@ const FX = {
       gain.connect(ctx.destination);
       osc.start();
       osc.stop(ctx.currentTime + duration);
+      // OscillatorNode는 stop 후 자동 GC됨 (별도 close 불필요)
     } catch (e) {
       // 오디오 정책상 미허용 시 무시
     }
@@ -130,10 +163,15 @@ class CyberCasinoGame {
     this.isPaused = false;
     this.timerInterval = null;
 
-    // 연타 방어 (T02-C12)
+    // 연타 방어 (T02-C12) — 모든 핵심 입력에 통합 300ms Throttle
     this.lastInputTime = 0;
+    this.lastTargetInputTime = 0;  // [T02-C12] 타겟 선택 버튼 전용 Throttle
+    this.lastChipInputTime = 0;    // [T02-C12] 칩 추가 버튼 전용 Throttle
     this.isActionLocked = false;
     this.isBetConfirmed = false; // [핵심] 유저가 직접 'BETTING NOW' 버튼을 눌렀을 때만 true!
+
+    // [T02-C14] 탭 이탈 자동 일시정지 전용 플래그 (수동 일시정지와 분리)
+    this.isAutoPaused = false;
 
     // 경마 캔버스 렌더러 참조
     this.raceAnimFrameId = null;
@@ -234,6 +272,10 @@ class CyberCasinoGame {
       // 파산 구제 모달
       bustModal: document.getElementById('bustModal'),
       bailoutBtn: document.getElementById('bailoutBtn'),
+
+      // [T02-C21] 난이도 비교 분석 패널
+      analysisPanel: document.getElementById('analysisPanel'),
+      analysisContent: document.getElementById('analysisContent'),
     };
   }
 
@@ -269,12 +311,26 @@ class CyberCasinoGame {
       });
     }
 
-    // 3. 브라우저 탭 포커스 이탈 / 복귀 보호 (T02-C14)
+    // 3. 브라우저 탭 포커스 이탈 / 복귀 보호 (T02-C14) — 실제 자동 일시정지/재개 처리
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
-        console.log('[Visibility] 탭 이탈: 백그라운드 타이머 일시 보호');
+        // [T02-C14] 탭 이탈: 수동 일시정지가 아닌 경우에만 자동 일시정지 적용
+        if (!this.isPaused) {
+          this.isAutoPaused = true;
+          this.isPaused = true;
+          this.dom.engineStatus.innerText = "Tab Away";
+          this.dom.engineStatus.previousElementSibling.className = "w-2 h-2 rounded-full bg-amber-400";
+          console.log('[Visibility] 탭 이탈: 자동 일시정지 발동');
+        }
       } else {
-        console.log('[Visibility] 탭 복귀: 타이머 무결성 유지');
+        // [T02-C14] 탭 복귀: 자동 일시정지였던 경우에만 자동 재개 (수동 정지 상태는 건드리지 않음)
+        if (this.isAutoPaused) {
+          this.isAutoPaused = false;
+          this.isPaused = false;
+          this.dom.engineStatus.innerText = "Ready";
+          this.dom.engineStatus.previousElementSibling.className = "w-2 h-2 rounded-full bg-brand-emerald";
+          console.log('[Visibility] 탭 복귀: 자동 재개 완료');
+        }
       }
     });
 
@@ -283,17 +339,29 @@ class CyberCasinoGame {
     this.dom.tabHighLow.addEventListener('click', () => this.switchGame('HIGH_LOW'));
     this.dom.tabHorseRace.addEventListener('click', () => this.switchGame('HORSE_RACE'));
 
-    // 5. 타겟 선택 (홀/짝, 하이/로우, 말 1~4)
+    // 5. 타겟 선택 (홀/짝, 하이/로우, 말 1~4) — [T02-C12] 300ms Throttle 적용
     document.querySelectorAll('.bet-target-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
+        const now = Date.now();
+        if (now - this.lastTargetInputTime < 300) {
+          console.warn('[Throttle] 타겟 선택 연타 무시 (300ms 이내)');
+          return;
+        }
+        this.lastTargetInputTime = now;
         const target = e.currentTarget.dataset.target;
         this.selectTarget(target, e.currentTarget);
       });
     });
 
-    // 6. 베팅 칩 금액 추가
+    // 6. 베팅 칩 금액 추가 — [T02-C12] 300ms Throttle 적용
     document.querySelectorAll('.chip-add-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
+        const now = Date.now();
+        if (now - this.lastChipInputTime < 300) {
+          console.warn('[Throttle] 칩 추가 연타 무시 (300ms 이내)');
+          return;
+        }
+        this.lastChipInputTime = now;
         const amt = parseInt(e.currentTarget.dataset.amount, 10);
         this.addBetAmount(amt);
       });
@@ -322,7 +390,16 @@ class CyberCasinoGame {
       this.dom.bailoutBtn.addEventListener('click', () => this.claimBailout());
     }
 
-    // 10. 기록 초기화
+    // 10. 창 크기 변경 시 Canvas 재초기화 + 게임 상태 보존 (T02-C13)
+    window.addEventListener('resize', () => {
+      // Canvas 리사이즈 (경마 게임일 때만 필요. ACTION 중이면 건드리지 않음)
+      if (this.selectedGame === 'HORSE_RACE' && this.phase !== 'ACTION') {
+        this.initHorseRaceCanvas();
+      }
+      // 게임 상태(칩, 타겟, 모드 등)는 JS 변수에 있으므로 레이아웃 변경에 영향 없음
+    });
+
+    // 11. 기록 초기화
     this.dom.clearHistoryBtn.addEventListener('click', () => {
       if (confirm('최근 20회 게임 기록을 초기화하시겠습니까?')) {
         StorageManager.clearHistory();
@@ -345,11 +422,11 @@ class CyberCasinoGame {
     if (this.phase !== 'BETTING') return;
     this.currentMode = mode;
     if (mode === 'SAFE') {
-      this.dom.modeSafeBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-brand-indigo text-white shadow-sm";
-      this.dom.modeHighrollerBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all";
+      this.dom.modeSafeBtn.className = "px-2 lg:px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-semibold transition-all bg-brand-indigo text-white shadow-sm whitespace-nowrap";
+      this.dom.modeHighrollerBtn.className = "px-2 lg:px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-semibold text-slate-400 hover:text-white transition-all whitespace-nowrap";
     } else {
-      this.dom.modeHighrollerBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-brand-indigo text-white shadow-sm";
-      this.dom.modeSafeBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all";
+      this.dom.modeHighrollerBtn.className = "px-2 lg:px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-semibold transition-all bg-brand-indigo text-white shadow-sm whitespace-nowrap";
+      this.dom.modeSafeBtn.className = "px-2 lg:px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-semibold text-slate-400 hover:text-white transition-all whitespace-nowrap";
     }
     this.updatePayoutNotice();
   }
@@ -978,6 +1055,93 @@ class CyberCasinoGame {
     
     this.dom.netProfitText.innerText = `${netProfit >= 0 ? '+' : ''}${netProfit.toLocaleString()} POINTS`;
     this.dom.netProfitText.className = `font-display font-semibold ${netProfit >= 0 ? 'text-brand-emerald' : 'text-rose-400'}`;
+
+    // [T02-C21] 난이도 비교 분석 패널: PnL 범위/중앙값/최대 연패 산출
+    this.renderDifficultyAnalysis(history, {
+      stdCount, stdWins, stdProfit,
+      chgCount, chgWins, chgProfit
+    });
+  }
+
+  // [T02-C21] 난이도 비교 분석 지표 산출 및 렌더링
+  renderDifficultyAnalysis(history, stats) {
+    if (!this.dom.analysisPanel || !this.dom.analysisContent) return;
+
+    // 데이터가 3개 미만이면 분석 숨김
+    if (history.length < 3) {
+      this.dom.analysisPanel.classList.add('hidden');
+      return;
+    }
+    this.dom.analysisPanel.classList.remove('hidden');
+
+    // 스탠다드/챌린지 모드별 PnL 배열 분리
+    const stdPnls = history.filter(i => i.mode.includes('스탠다드')).map(i => i.pnl);
+    const chgPnls = history.filter(i => i.mode.includes('챌린지')).map(i => i.pnl);
+
+    const calcStats = (pnls) => {
+      if (pnls.length === 0) return { min: 0, max: 0, median: 0, maxLoseStreak: 0 };
+      const sorted = [...pnls].sort((a, b) => a - b);
+      const min = sorted[0];
+      const max = sorted[sorted.length - 1];
+      const mid = Math.floor(sorted.length / 2);
+      const median = sorted.length % 2 !== 0 ? sorted[mid] : Math.round((sorted[mid - 1] + sorted[mid]) / 2);
+
+      // 최대 연패 횟수 산출
+      let maxLoseStreak = 0;
+      let currentStreak = 0;
+      pnls.forEach(p => {
+        if (p < 0) {
+          currentStreak++;
+          maxLoseStreak = Math.max(maxLoseStreak, currentStreak);
+        } else {
+          currentStreak = 0;
+        }
+      });
+      return { min, max, median, maxLoseStreak };
+    };
+
+    const stdAnalysis = calcStats(stdPnls);
+    const chgAnalysis = calcStats(chgPnls);
+
+    // 최종 추천 로직: 안정성(연패 + 범위 좌우)을 기준으로 판단
+    let recommendation = '';
+    if (stats.stdCount >= 3 && stats.chgCount >= 3) {
+      const stdRisk = stdAnalysis.maxLoseStreak + Math.abs(stdAnalysis.min);
+      const chgRisk = chgAnalysis.maxLoseStreak + Math.abs(chgAnalysis.min);
+      if (stdRisk <= chgRisk) {
+        recommendation = `🛡️ 최종 추천: <span class="text-brand-indigo font-bold">스탠다드 모드</span> — 연패 위험이 낮고(${stdAnalysis.maxLoseStreak}회 vs ${chgAnalysis.maxLoseStreak}회), 손익 변동 폭이 안정적입니다.`;
+      } else {
+        recommendation = `⚡ 최종 추천: <span class="text-brand-amber font-bold">챌린지 모드</span> — 클 수익 메디안(${chgAnalysis.median.toLocaleString()}P)이 위험을 상쇄합니다.`;
+      }
+    } else {
+      recommendation = '⏳ 두 모드의 데이터가 각 3회 이상 모이면 난이도 추천을 산출합니다.';
+    }
+
+    const fmt = (v) => (v >= 0 ? '+' : '') + v.toLocaleString();
+
+    this.dom.analysisContent.innerHTML = `
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+        <div class="bg-slate-900 border border-slate-800 rounded-lg p-3">
+          <div class="text-[11px] text-brand-indigo font-bold mb-1.5">스탠다드 모드 분석 (${stdPnls.length}회)</div>
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px]">
+            <div class="text-slate-400">PnL 범위</div><div class="text-slate-200 font-display">${fmt(stdAnalysis.min)} ~ ${fmt(stdAnalysis.max)}</div>
+            <div class="text-slate-400">중앙값(Median)</div><div class="text-slate-200 font-display">${fmt(stdAnalysis.median)}P</div>
+            <div class="text-slate-400">최대 연패</div><div class="${stdAnalysis.maxLoseStreak >= 3 ? 'text-rose-400' : 'text-slate-200'} font-display">${stdAnalysis.maxLoseStreak}회 연속</div>
+          </div>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-lg p-3">
+          <div class="text-[11px] text-brand-amber font-bold mb-1.5">챌린지 모드 분석 (${chgPnls.length}회)</div>
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px]">
+            <div class="text-slate-400">PnL 범위</div><div class="text-slate-200 font-display">${fmt(chgAnalysis.min)} ~ ${fmt(chgAnalysis.max)}</div>
+            <div class="text-slate-400">중앙값(Median)</div><div class="text-slate-200 font-display">${fmt(chgAnalysis.median)}P</div>
+            <div class="text-slate-400">최대 연패</div><div class="${chgAnalysis.maxLoseStreak >= 3 ? 'text-rose-400' : 'text-slate-200'} font-display">${chgAnalysis.maxLoseStreak}회 연속</div>
+          </div>
+        </div>
+      </div>
+      <div class="text-[11px] text-slate-300 bg-slate-900 border border-slate-800 rounded-lg p-2.5">
+        ${recommendation}
+      </div>
+    `;
   }
 
   formatGameName(key) {

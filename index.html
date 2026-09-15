@@ -93,13 +93,13 @@
       <!-- 우측 상태: 모드 스위치, 칩, 일시정지 -->
       <div class="flex items-center space-x-3">
         
-        <!-- 단일 난이도 파라미터 (House Edge 토글) -->
-        <div class="flex items-center bg-slate-850 rounded-xl p-1 border border-slate-800">
-          <button id="modeSafeBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-brand-indigo text-white shadow-sm">
-            스탠다드 (수수료 5%)
+        <!-- 단일 난이도 파라미터 (House Edge 토글) - [T02-C10] 1366px 대응 반응형 -->
+        <div class="flex items-center bg-slate-850 rounded-xl p-1 border border-slate-800 flex-shrink-0">
+          <button id="modeSafeBtn" class="px-2 lg:px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-semibold transition-all bg-brand-indigo text-white shadow-sm whitespace-nowrap">
+            STD 5%
           </button>
-          <button id="modeHighrollerBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all">
-            챌린지 (수수료 15% · 잭팟 x3)
+          <button id="modeHighrollerBtn" class="px-2 lg:px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-semibold text-slate-400 hover:text-white transition-all whitespace-nowrap">
+            CHG 15%
           </button>
         </div>
 
@@ -454,6 +454,20 @@
           </tbody>
         </table>
       </div>
+
+      <!-- [T02-C21] 난이도 비교 분석 요약 패널 -->
+      <div id="analysisPanel" class="hidden mt-4 bg-slate-950/70 border border-slate-800 rounded-xl p-4">
+        <div class="flex items-center gap-2 mb-3">
+          <i data-lucide="bar-chart-3" class="w-4 h-4 text-brand-violet"></i>
+          <h3 class="font-display font-bold text-xs tracking-wider text-slate-200 uppercase">
+            DIFFICULTY ANALYSIS (T02-C21: 난이도 범위/중앙값/연패 분석)
+          </h3>
+        </div>
+        <div id="analysisContent">
+          <!-- JS에서 동적 렌더링 -->
+        </div>
+      </div>
+
     </section>
 
   </main>
